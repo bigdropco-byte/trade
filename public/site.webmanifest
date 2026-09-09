@@ -1,0 +1,16 @@
+{
+  "name": "TradeScrapbook Trading Journal",
+  "short_name": "TradeScrapbook",
+  "description": "Institutional-grade MT5 and MT4 trading journal and performance analytics scrapbook.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#10B981",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

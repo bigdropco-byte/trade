@@ -1,0 +1,11 @@
+# TradeScrapbook Robots.txt
+# Optimized for full Googlebot, Bingbot, and search engine crawler discovery
+
+User-agent: *
+Allow: /
+Allow: /sample_mt5_statement.xlsx
+Allow: /sample_windsor_mt5_report.xlsx
+
+# Crawl Delay & Sitemap
+Sitemap: https://tradescrapbook.com/sitemap.xml
+Host: https://tradescrapbook.com
