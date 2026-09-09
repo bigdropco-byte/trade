@@ -203,10 +203,10 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 onClose();
               }}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all cursor-pointer"
-              title="Explore Verified Sample Portfolio"
+              title="Explore Sample Journal"
             >
               <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Sample Portfolio</span>
+              <span>Sample Journal</span>
               <ArrowRight className="w-3 h-3 ml-0.5" />
             </button>
           </div>

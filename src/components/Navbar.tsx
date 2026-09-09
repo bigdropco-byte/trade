@@ -99,18 +99,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onBackToHome}
             className="flex items-center gap-1 text-xs text-slate-600 hover:text-slate-900 font-medium transition-colors cursor-pointer mr-2"
-            title="Return to landing page"
+            title="Return to homepage"
           >
             <Home className="w-3.5 h-3.5 text-slate-500" />
-            <span>Home</span>
+            <span>Homepage</span>
           </button>
           <button
             onClick={onLoadDemo}
             className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 font-medium transition-colors cursor-pointer"
-            title="Reset to Verified Sample Portfolio"
+            title="Reset to Sample Journal"
           >
             <RefreshCw className="w-3 h-3" />
-            <span>Sample Portfolio</span>
+            <span>Sample Journal</span>
           </button>
         </div>
       </div>
@@ -123,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div 
             onClick={onBackToHome}
             className="flex items-center gap-3 cursor-pointer group"
-            title="Return to Landing Page"
+            title="Return to Homepage"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-indigo-600 p-0.5 shadow-md shadow-emerald-600/10 group-hover:scale-105 transition-transform">
               <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
