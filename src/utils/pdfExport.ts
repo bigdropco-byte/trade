@@ -29,7 +29,7 @@ export interface PdfExportOptions {
 }
 
 export const defaultPdfExportOptions: PdfExportOptions = {
-  title: 'TradePulse Performance Report',
+  title: 'TradeScrapbook Performance Report',
   subtitle: 'Institutional Comprehensive Trading Statement',
   dateRange: 'all',
   sections: {
@@ -122,21 +122,21 @@ function sectionTitle(
   label: string, y: number, pageWidth: number, margin: number
 ): number {
   // Colored left bar + title
-  const barW = 3.5;
+  const barW = 4;
   rgb(doc, theme.accent, 'fill');
-  doc.rect(margin, y, barW, 5.5, 'F');
+  doc.rect(margin, y, barW, 6.5, 'F');
 
-  bold(doc, 11);
+  bold(doc, 11.5);
   rgb(doc, theme.dark, 'text');
-  doc.text(label, margin + barW + 3, y + 4.3);
+  doc.text(label, margin + barW + 4, y + 5);
 
-  // Full-width hairline below
+  // Full-width hairline below with extra breathing room
   rgb(doc, theme.border, 'draw');
   doc.setLineWidth(0.2);
-  doc.line(margin, y + 6.5, pageWidth - margin, y + 6.5);
+  doc.line(margin, y + 8, pageWidth - margin, y + 8);
   doc.setLineWidth(0.1);
 
-  return y + 10;
+  return y + 13; // generous gap before first content
 }
 
 function pill(
@@ -161,26 +161,26 @@ function kpiCard(
   rgb(doc, theme.border, 'draw');
   doc.roundedRect(x, y, w, h, 2, 2, 'FD');
 
-  // Accent top strip
+  // Accent top strip (3px)
   rgb(doc, valueColor, 'fill');
-  doc.roundedRect(x, y, w, 1.8, 1, 1, 'F');
-  doc.rect(x, y + 0.8, w, 1, 'F'); // fill bottom corners of strip
+  doc.roundedRect(x, y, w, 2.5, 1, 1, 'F');
+  doc.rect(x, y + 1.5, w, 1.2, 'F'); // fill bottom corners of strip
 
-  // Label
-  normal(doc, 7);
+  // Label — positioned below strip with clear gap
+  normal(doc, 6.5);
   rgb(doc, MUTED, 'text');
-  doc.text(label.toUpperCase(), x + 4, y + 8);
+  doc.text(label.toUpperCase(), x + 4, y + 9);
 
-  // Value
-  bold(doc, 10.5);
+  // Value — prominent, well-spaced
+  bold(doc, 11);
   rgb(doc, valueColor, 'text');
-  doc.text(value, x + 4, y + 16);
+  doc.text(value, x + 4, y + 18);
 
-  // Note
+  // Note — at bottom with generous gap
   if (note) {
     normal(doc, 6);
     rgb(doc, MUTED, 'text');
-    doc.text(note, x + 4, y + 21);
+    doc.text(note, x + 4, y + h - 4);
   }
 }
 
@@ -202,7 +202,7 @@ function tableRow(
   cells: { text: string; color?: [number,number,number]; bold?: boolean }[],
   xPositions: number[],
   y: number, contentWidth: number, margin: number, isAlt: boolean,
-  rowH = 5.5
+  rowH = 6.5
 ): number {
   if (isAlt) {
     rgb(doc, theme.cardBg, 'fill');
@@ -395,7 +395,7 @@ export function exportStatementPdf(
     doc.rect(0, 0, PW, 8, 'F');
     bold(doc, 6);
     rgb(doc, [255,255,255], 'text');
-    doc.text('TradePulse  •  Performance Statement', M, 5.5);
+    doc.text('TradeScrapbook  •  Performance Statement', M, 5.5);
     doc.text(`${displayName}  ·  #${displayAccount}  ·  ${new Date().toLocaleDateString()}`, PW - M, 5.5, { align: 'right' });
     y = 12;
   };
@@ -404,102 +404,114 @@ export function exportStatementPdf(
   // PAGE 1: COVER PAGE
   // ============================================================
 
-  // Full-height gradient header panel (60% of page)
-  const coverH = 130;
+  // Full dark header panel — taller for better breathing room
+  const coverH = 140;
   rgb(doc, theme.primary, 'fill');
   doc.rect(0, 0, PW, coverH, 'F');
 
   // Decorative accent stripe at top
   rgb(doc, theme.accent, 'fill');
-  doc.rect(0, 0, PW, 4, 'F');
+  doc.rect(0, 0, PW, 5, 'F');
 
-  // Large circle decoration (top-right)
-  rgb(doc, [255, 255, 255], 'fill');
+  // Decorative circle ornaments (subtle, top-right)
+  doc.setGState(doc.GState({ opacity: 0.05 }));
   doc.setFillColor(255, 255, 255);
-  doc.setGState(doc.GState({ opacity: 0.04 }));
-  doc.circle(PW - 20, 20, 55, 'F');
-  doc.circle(PW + 10, 80, 60, 'F');
+  doc.circle(PW - 18, 22, 52, 'F');
+  doc.circle(PW + 8, 88, 58, 'F');
   doc.setGState(doc.GState({ opacity: 1.0 }));
 
-  // Logo / Brand
-  bold(doc, 22);
+  // ── Brand Logo block (top-left) ───────────────────────────────
+  bold(doc, 24);
   rgb(doc, WHITE, 'text');
-  doc.text('TradePulse', M, 24);
-  bold(doc, 8);
-  rgb(doc, theme.accent, 'text');
-  doc.text('INSTITUTIONAL PERFORMANCE REPORT', M, 30);
+  doc.text('TradeScrapbook', M, 26);
 
-  // Horizontal divider
+  bold(doc, 7.5);
+  rgb(doc, theme.accent, 'text');
+  doc.text('INSTITUTIONAL PERFORMANCE REPORT  ·  tradescrapbook.com', M, 33);
+
+  // Accent divider line
   rgb(doc, theme.accent, 'draw');
-  doc.setLineWidth(0.5);
-  doc.line(M, 33, M + 60, 33);
+  doc.setLineWidth(0.6);
+  doc.line(M, 37, M + 70, 37);
   doc.setLineWidth(0.1);
 
-  // Trader info block
-  bold(doc, 16);
+  // ── Trader info block (left column) ──────────────────────────
+  bold(doc, 17);
   rgb(doc, WHITE, 'text');
-  doc.text(displayName, M, 46);
+  doc.text(displayName, M, 50);
 
-  normal(doc, 8.5);
+  normal(doc, 9);
   rgb(doc, [203, 213, 225], 'text');
-  doc.text(`Account  #${displayAccount}`, M, 54);
-  doc.text(displayBroker, M, 61);
+  doc.text(`Account  #${displayAccount}`, M, 59);
+  doc.text(displayBroker, M, 67);
 
   const nowStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  doc.text(`Generated: ${nowStr}`, M, 68);
+  normal(doc, 8);
+  rgb(doc, [148, 163, 184], 'text');
+  doc.text(`Generated: ${nowStr}`, M, 75);
 
-  // Platform + account type pills
+  // Platform + type pills
   const pX = M;
-  const pY = 74;
-  pill(doc, platform, pX, pY, 22, 8, theme.accent, theme.primary, 7);
-  pill(doc, accountInfo.isDemo ? 'DEMO' : 'LIVE', pX + 25, pY, 22, 8, theme.accent2, theme.primary, 7);
+  const pY = 82;
+  pill(doc, platform, pX, pY, 24, 9, theme.accent, theme.primary, 7.5);
+  pill(doc, accountInfo.isDemo ? 'DEMO' : 'LIVE ACCOUNT', pX + 27, pY, accountInfo.isDemo ? 22 : 38, 9, theme.accent2, theme.primary, 7);
   if (accountInfo.accountType) {
-    const typeClean = accountInfo.accountType.replace(/[()]/g, '').replace(/,/g, ' ·').trim().slice(0, 30);
-    pill(doc, typeClean, pX + 50, pY, Math.min(80, typeClean.length * 2 + 8), 8, [30, 41, 59], [203, 213, 225], 6.5);
+    const typeClean = accountInfo.accountType.replace(/[()]/g, '').replace(/,/g, ' ·').trim().slice(0, 28);
+    const typeW = Math.min(85, typeClean.length * 1.8 + 8);
+    pill(doc, typeClean, pX + (accountInfo.isDemo ? 52 : 68), pY, typeW, 9, [30, 41, 59], [180, 195, 215], 6.5);
   }
 
-  // Large P&L hero stat (right side of cover)
-  const heroX = PW - M - 70;
+  // ── Hero stats (right column) ─────────────────────────────────
   const isProfit = metrics.netProfit >= 0;
-  bold(doc, 28);
+  bold(doc, 30);
   rgb(doc, isProfit ? WIN_COLOR : LOSS_COLOR, 'text');
   const heroVal = `${isProfit ? '+' : ''}$${metrics.netProfit.toFixed(2)}`;
-  doc.text(heroVal, PW - M, 50, { align: 'right' });
-  bold(doc, 8);
-  rgb(doc, [148, 163, 184], 'text');
-  doc.text('NET PROFIT / LOSS', PW - M, 56, { align: 'right' });
+  doc.text(heroVal, PW - M, 54, { align: 'right' });
 
-  bold(doc, 13);
+  bold(doc, 7.5);
+  rgb(doc, [148, 163, 184], 'text');
+  doc.text('NET PROFIT / LOSS', PW - M, 61, { align: 'right' });
+
+  // Divider between hero stats
+  rgb(doc, [255, 255, 255], 'draw');
+  doc.setGState(doc.GState({ opacity: 0.12 }));
+  doc.setLineWidth(0.3);
+  doc.line(PW - M - 55, 65, PW - M, 65);
+  doc.setLineWidth(0.1);
+  doc.setGState(doc.GState({ opacity: 1.0 }));
+
+  bold(doc, 15);
   rgb(doc, metrics.winRate >= 50 ? WIN_COLOR : LOSS_COLOR, 'text');
-  doc.text(`${metrics.winRate}%`, PW - M, 68, { align: 'right' });
+  doc.text(`${metrics.winRate}%`, PW - M, 76, { align: 'right' });
   bold(doc, 7);
   rgb(doc, [148, 163, 184], 'text');
-  doc.text('WIN RATE', PW - M, 73, { align: 'right' });
+  doc.text('WIN RATE', PW - M, 82, { align: 'right' });
 
-  bold(doc, 10);
-  rgb(doc, [203, 213, 225], 'text');
-  doc.text(`${metrics.totalTrades} Trades  ·  ${metrics.totalVolume.toFixed(2)} Lots`, PW - M, 82, { align: 'right' });
+  bold(doc, 9);
+  rgb(doc, [180, 195, 215], 'text');
+  doc.text(`${metrics.totalTrades} Positions  ·  ${metrics.totalVolume.toFixed(2)} Lots`, PW - M, 92, { align: 'right' });
+  doc.text(`${metrics.totalReturnPercent >= 0 ? '+' : ''}${metrics.totalReturnPercent}% Return`, PW - M, 100, { align: 'right' });
 
-  // Cover summary cards — 4 in a row
-  y = coverH + 10;
+  // ── Cover summary KPI cards (below the dark panel) ────────────
+  y = coverH + 12;
   const cardW = (CW - 9) / 4;
-  const cardH = 32;
+  const cardH = 34;
 
   const coverKpis = [
-    { label: 'Profit Factor',   value: `${metrics.profitFactor}x`, color: metrics.profitFactor >= 1.5 ? WIN_COLOR : MUTED, note: metrics.profitFactor >= 1.5 ? 'Excellent edge' : 'Needs work' },
-    { label: 'Expectancy',      value: `$${metrics.expectancy}`,  color: metrics.expectancy >= 0 ? WIN_COLOR : LOSS_COLOR, note: 'Per trade avg' },
-    { label: 'Max Drawdown',    value: `-${metrics.maxDrawdownPercent}%`, color: LOSS_COLOR, note: `-$${metrics.maxDrawdownDollars.toFixed(0)} peak-to-trough` },
-    { label: 'Sharpe Ratio',    value: `${metrics.sharpeRatio}`,  color: metrics.sharpeRatio >= 1 ? WIN_COLOR : MUTED, note: metrics.sharpeRatio >= 1 ? 'Risk-adjusted good' : 'Improve consistency' },
+    { label: 'Profit Factor',  value: `${metrics.profitFactor}×`,         color: metrics.profitFactor >= 1.5 ? WIN_COLOR : MUTED,       note: metrics.profitFactor >= 1.5 ? 'Excellent edge' : 'Needs improvement' },
+    { label: 'Expectancy',     value: `$${metrics.expectancy}`,            color: metrics.expectancy >= 0 ? WIN_COLOR : LOSS_COLOR,      note: 'Avg gain per trade' },
+    { label: 'Max Drawdown',   value: `-${metrics.maxDrawdownPercent}%`,   color: LOSS_COLOR,                                             note: `-$${metrics.maxDrawdownDollars.toFixed(0)} peak→trough` },
+    { label: 'Sharpe Ratio',   value: `${metrics.sharpeRatio}`,            color: metrics.sharpeRatio >= 1 ? WIN_COLOR : MUTED,          note: metrics.sharpeRatio >= 1 ? 'Risk-adjusted: Good' : 'Improve consistency' },
   ];
   coverKpis.forEach((kpi, i) => {
     kpiCard(doc, theme, kpi.label, kpi.value, kpi.color as [number,number,number], M + i * (cardW + 3), y, cardW, cardH, kpi.note);
   });
-  y += cardH + 6;
+  y += cardH + 10;
 
-  // Equity curve on cover
-  checkSpace(52);
-  equityCurve(doc, theme, filteredTrades, M, y, CW, 46);
-  y += 52;
+  // ── Equity curve (full width, below KPI cards) ────────────────
+  checkSpace(54);
+  equityCurve(doc, theme, filteredTrades, M, y, CW, 48);
+  y += 58;
 
   // ============================================================
   // SECTION: OVERVIEW KPI SCORECARD
@@ -1094,12 +1106,12 @@ export function exportStatementPdf(
 
     normal(doc, 6);
     rgb(doc, [148, 163, 184], 'text');
-    doc.text('100% Client-Side · No server storage · tradescrapbook.com', M, PH - 4.5);
-    doc.text(`Page ${i} of ${totalPages}  ·  Powered by TradePulse`, PW - M, PH - 4.5, { align: 'right' });
+    doc.text('100% Client-Side · No data leaves your browser · tradescrapbook.com', M, PH - 4.5);
+    doc.text(`Page ${i} of ${totalPages}  ·  Powered by TradeScrapbook`, PW - M, PH - 4.5, { align: 'right' });
   }
 
   // ── Save ─────────────────────────────────────────────────────────────────
   const safeAccount = options.maskAccount ? 'Anonymous' : (accountInfo.account || 'Statement').replace(/[^a-zA-Z0-9_-]/g, '');
   const dateStr     = new Date().toISOString().slice(0, 10);
-  doc.save(`TradePulse_Statement_${safeAccount}_${dateStr}.pdf`);
+  doc.save(`TradeScrapbook_Statement_${safeAccount}_${dateStr}.pdf`);
 }
