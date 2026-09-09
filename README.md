@@ -1,6 +1,6 @@
-# TradeScrapbook
+# TradeScrapbook — Free Trading Journal & Free Forex Trading Journal
 
-> The #1 Free, 100% Private MT5 & MT4 Trading Journal & Performance Scrapbook.
+> The #1 Free, 100% Private MT4 MT5 Trading Journal Free & Performance Scrapbook.
 
 [![Deploy to GitHub Pages](https://github.com/bigdropco-byte/trade/actions/workflows/deploy.yml/badge.svg)](https://github.com/bigdropco-byte/trade/actions/workflows/deploy.yml)
 [![Live Domain](https://img.shields.io/badge/Domain-tradescrapbook.com-10B981?style=flat&logo=google-chrome&logoColor=white)](https://tradescrapbook.com)
@@ -11,7 +11,7 @@
 
 ## 🌟 Overview
 
-**TradeScrapbook** (`tradescrapbook.com`) is an institutional-grade, zero-knowledge trading journal designed for MetaTrader 5 and MetaTrader 4 traders. Instead of paying $30 to $50 per month to third-party cloud platforms that store your private broker account credentials, lot sizes, and balances on remote databases, TradeScrapbook parses and analyzes everything **100% locally inside your browser memory**.
+**TradeScrapbook** (also known as **Trade Scrapbook**) is the premier **free trading journal** and **free forex trading journal** designed specifically for MetaTrader 5 and MetaTrader 4 traders. As a 100% client-side **mt4 mt5 trading journal free** of charge forever, TradeScrapbook eliminates expensive $30 to $50 monthly subscription fees and removes the risk of third-party cloud data breaches by parsing and analyzing all trade statements locally inside your browser memory.
 
 ---
 

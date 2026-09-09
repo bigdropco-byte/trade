@@ -100,23 +100,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   const faqs = [
     {
-      q: 'Why do professional traders avoid cloud journals and choose TradeScrapbook?',
-      a: 'Traditional online trading journals charge $360 to $600 per year and require you to either connect your broker via third-party APIs or upload your trade history to remote cloud databases. This creates a severe security risk—exposing your lot sizes, equity balance, strategy entries, and broker account numbers to external servers. TradeScrapbook gives you institutional-grade analytics for $0 forever with 100% client-side privacy: every calculation happens in your browser sandbox, and your private data never leaves your computer.'
+      q: 'Why is TradeScrapbook the #1 free trading journal for MT4 & MT5 traders?',
+      a: 'TradeScrapbook (Trade Scrapbook) is built from the ground up as a 100% free trading journal and free forex trading journal. Traditional online journals charge $360 to $600 per year and force you to upload your sensitive broker trade history to remote cloud databases. TradeScrapbook delivers institutional-grade analytics, interactive daily P&L calendars, and AI psychological audits for $0 forever with 100% client-side privacy: every calculation happens in your browser sandbox, and your private data never leaves your computer.'
     },
     {
-      q: 'Is TradeScrapbook safe and private? Does it store my trading account info on a server?',
-      a: 'Yes, TradeScrapbook is engineered with zero-knowledge architecture. All MT5 and MT4 Excel reports, account numbers, and trading histories are parsed strictly in your browser memory using client-side JavaScript. Zero bytes of your trading data are ever sent to, logged by, or stored on external servers.'
+      q: 'Is TradeScrapbook truly an mt4 mt5 trading journal free of charge forever?',
+      a: 'Yes! TradeScrapbook is a completely free mt4 mt5 trading journal free of charge forever. There are zero monthly subscription fees, zero paywalled premium features, no credit card required, and no hidden trial periods. You get unrestricted access to the full analytics suite, P&L heatmap calendar, and PDF report generator.'
     },
     {
-      q: 'How do I export my MT5 or MT4 Trade History Report to Excel?',
+      q: 'How does this free forex trading journal protect my data and broker privacy?',
+      a: 'TradeScrapbook is engineered with zero-knowledge, 100% client-side architecture. All MT5 and MT4 Excel reports, ticket histories, lot sizes, and account balances are parsed strictly in your browser memory using client-side JavaScript. Zero bytes of your trading data are ever sent to, logged by, or stored on external servers.'
+    },
+    {
+      q: 'How do I export my MT5 or MT4 Trade History Report to Excel for Trade Scrapbook?',
       a: 'In MetaTrader 5, open the "History" tab at the bottom of the Terminal, right-click any closed trade, select "Report", and click "Open XML (MS Office Excel 2007)" or "HTML". In MT4, right-click the Account History tab and choose "Save as Detailed Report". Then simply drag and drop that file into TradeScrapbook!'
     },
     {
-      q: 'Does TradeScrapbook support Prop Firm evaluation rules like FTMO and FundedNext?',
-      a: 'Yes! TradeScrapbook includes an algorithmic Prop Firm Challenge Monitor that tracks your Max Daily Loss (5% rule), Max Overall Drawdown (10% rule), and Profit Target (8-10%) in real-time. It calculates your exact dollar and percentage loss buffers so you never accidentally breach a funded rule.'
+      q: 'Does this free trading journal support Prop Firm evaluation rules like FTMO and FundedNext?',
+      a: 'Yes! TradeScrapbook includes an algorithmic Prop Firm Challenge Monitor designed for evaluation accounts. It tracks your Max Daily Loss (5% rule), Max Overall Drawdown (10% rule), and Profit Target (8-10%) in real-time, calculating your exact dollar and percentage loss buffers so you never accidentally breach a funded rule.'
     },
     {
-      q: 'Can I export institutional PDF reports and share screenshot cards of my performance?',
+      q: 'Can I export institutional PDF reports and share screenshot cards from Trade Scrapbook?',
       a: 'Yes. With one click, you can generate an institutional-grade PDF statement with customizable section selectors (Overview, Calendar, Journal, Analytics, AI Psychology, Prop Firm) or download a high-resolution verified social share card with built-in account number privacy masking for Twitter, Discord, and Telegram.'
     },
     {
@@ -205,22 +209,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {/* Eyebrow Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold mb-6 shadow-xs">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>100% Client-Side Private • Zero Server Storage • Free Forever</span>
+            <span>100% Free Forex Trading Journal • MT4 MT5 Trading Journal Free • Zero Server Storage</span>
           </div>
 
           {/* Main H1 Headline (SEO Rank #1 Target) */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight sm:leading-tight">
-            The #1 Free MT5 & MT4 Trading Journal — <br />
+            The #1 Free Trading Journal & Free Forex Trading Journal — <br />
             <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 bg-clip-text text-transparent">
-              Institutional Edge Without The Monthly Fee
+              TradeScrapbook for MT4 & MT5
             </span>
           </h1>
 
           {/* Subheading with High Persuasion */}
           <p className="mt-5 text-sm sm:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            Stop giving your private trade history to cloud platforms that charge $40/month. 
-            Drop your <strong>MetaTrader 5 or MT4 Excel report</strong> for instant day-by-day P&L calendars, 
-            equity curves, AI tilt detection, and prop firm rule protection — computed 100% privately in your browser.
+            Welcome to <strong>TradeScrapbook</strong> (also known as <strong>Trade Scrapbook</strong>) — the premier <strong>free trading journal</strong> and <strong>free forex trading journal</strong> built for modern traders. 
+            Experience the ultimate <strong>mt4 mt5 trading journal free</strong> with instant Excel statement parsing, interactive day-by-day P&L calendars, 
+            AI tilt detection, and prop firm rule protection — computed 100% privately in your browser with zero monthly fees.
           </p>
 
           {/* Hero Upload Dropzone Component (White Theme Card) */}
@@ -241,10 +245,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
 
               <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-                Drop your MT5 or MT4 Excel Statement Here
+                Drop your MT4 or MT5 Excel Statement Here
               </h2>
               <p className="text-xs text-slate-500 mt-1 max-w-sm">
-                Supports <strong className="text-slate-700">.xlsx, .xls, .htm, .html, .csv</strong> reports from MetaTrader 5 and MetaTrader 4.
+                Supports <strong className="text-slate-700">.xlsx, .xls, .htm, .html, .csv</strong> reports from MetaTrader 5 and MetaTrader 4 — the #1 mt4 mt5 trading journal free forever.
               </p>
 
               <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
@@ -372,11 +376,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <span>The Professional Trader's Standard</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            5 Critical Reasons Serious Traders Avoid Cloud Journals & Choose TradeScrapbook
+            5 Critical Reasons Serious Traders Choose TradeScrapbook (Trade Scrapbook)
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-            In a high-stakes trading career, your operational security, capital protection, and speed are everything. 
-            Here is why thousands of funded prop traders and independent retail investors refuse to use traditional cloud platforms.
+            In a high-stakes trading career, your operational security, capital preservation, and execution speed are everything. 
+            Here is why thousands of funded prop traders and forex investors avoid cloud databases and choose our <strong>free forex trading journal</strong>.
           </p>
         </div>
 
@@ -391,7 +395,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               1. Zero Server Surveillance
             </h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              When you use online journals, your sensitive broker account number, trade sizing, exact entry/exit timestamps, and profit history are saved on third-party cloud servers. A single database leak compromises your entire strategy. <strong>TradeScrapbook processes 100% locally in your browser's V8 engine. Zero server storage. Zero data leaks.</strong>
+              When you use online cloud journals, your broker credentials, trade sizing, exact entry/exit timestamps, and profit history are saved on third-party cloud servers. A single database leak compromises your entire strategy. <strong>Trade Scrapbook processes 100% locally in your browser's V8 engine — the ultimate private mt4 mt5 trading journal free of cloud exposure.</strong>
             </p>
           </div>
 
@@ -404,7 +408,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               2. Eliminate The $400/Yr Subscription Trap
             </h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Legacy platforms lock basic P&L calendars, win rate graphs, and trade logs behind expensive $29 to $49 monthly subscriptions. That is money stolen directly from your trading capital. <strong>TradeScrapbook gives you institutional hedge-fund grade analytics for $0 forever.</strong>
+              Legacy platforms lock basic P&L calendars, win rate graphs, and trade logs behind expensive $29 to $49 monthly subscriptions. That is capital drained directly from your trading balance. <strong>TradeScrapbook gives you institutional hedge-fund grade analytics for $0 forever as a 100% free trading journal.</strong>
             </p>
           </div>
 
@@ -662,10 +666,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             Unmatched Value
           </h2>
           <p className="text-2xl sm:text-4xl font-black text-slate-900 mt-2">
-            Why Smart Traders Choose TradeScrapbook
+            Why Smart Traders Choose TradeScrapbook — The #1 Free Trading Journal
           </p>
           <p className="text-xs sm:text-sm text-slate-600 mt-2">
-            A transparent comparison between TradeScrapbook, traditional paid platforms, and manual spreadsheets.
+            A transparent comparison between TradeScrapbook (Trade Scrapbook), traditional paid journals, and manual spreadsheets for forex and prop traders.
           </p>
         </div>
 
@@ -674,7 +678,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <thead>
               <tr className="border-b border-slate-200 bg-slate-100 text-slate-700 text-[11px] uppercase font-semibold">
                 <th className="py-4 pl-6">Feature</th>
-                <th className="py-4 px-4 text-emerald-700 font-bold bg-emerald-50">TradeScrapbook</th>
+                <th className="py-4 px-4 text-emerald-700 font-bold bg-emerald-50">TradeScrapbook (Free Journal)</th>
                 <th className="py-4 px-4 text-slate-700">Traditional Paid Journals</th>
                 <th className="py-4 pr-6 text-slate-500">Excel / Google Sheets</th>
               </tr>
@@ -809,15 +813,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
+      {/* SEO Keyword Index Bar */}
+      <section className="border-t border-slate-200 bg-slate-100/70 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-4">
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              TradeScrapbook — #1 Free Forex Trading Journal & MT4 MT5 Trading Journal Free
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-1 max-w-2xl mx-auto">
+              The premier free trading journal designed for MetaTrader 4 and MetaTrader 5 traders. Instant statement analytics, daily P&L heatmaps, tilt detection, and 100% private in-browser security.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] text-slate-600">
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs font-semibold text-slate-800">TradeScrapbook</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs font-semibold text-slate-800">Trade Scrapbook</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs font-semibold text-emerald-700">Free Trading Journal</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs font-semibold text-emerald-700">Free Forex Trading Journal</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs font-semibold text-indigo-700">MT4 MT5 Trading Journal Free</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs">Free MT5 Trading Journal</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs">Free MT4 Trading Journal</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs">Prop Firm Trading Journal Free</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs">MetaTrader Performance Tracker</span>
+            <span className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-2xs">Private In-Browser Trading Journal</span>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-8 px-4 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-slate-900">TradeScrapbook</span>
-            <span>•</span>
-            <span>Zero-Knowledge Private Trading Journal & Scrapbook • tradescrapbook.com</span>
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+            <span className="font-extrabold text-slate-900">TradeScrapbook (Trade Scrapbook)</span>
+            <span className="hidden sm:inline">•</span>
+            <span>#1 Free Trading Journal & Free Forex Trading Journal • <a href="https://tradescrapbook.com" className="text-emerald-600 font-semibold hover:underline">tradescrapbook.com</a></span>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-[11px]">
             <button onClick={onOpenPrivacy} className="text-emerald-600 hover:text-emerald-700 transition-colors font-medium cursor-pointer">
               Privacy Policy & Guarantee
             </button>
@@ -828,7 +858,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <span>•</span>
             <a href="#how-it-works" className="hover:text-slate-800 transition-colors">How It Works</a>
             <span>•</span>
-            <a href="#manifesto" className="hover:text-slate-800 transition-colors">Why Us</a>
+            <a href="#manifesto" className="hover:text-slate-800 transition-colors">Why Trade Scrapbook</a>
             <span>•</span>
             <a href="#faq" className="hover:text-slate-800 transition-colors">FAQ</a>
             <span>•</span>
