@@ -360,6 +360,7 @@ export const ReportExportModal: React.FC<ReportExportModalProps> = ({
                   {[
                     { id: 'emerald', label: 'Emerald Pro', bg: 'bg-emerald-600' },
                     { id: 'navy', label: 'Institutional Navy', bg: 'bg-slate-900' },
+                    { id: 'gold', label: 'Gold Premium', bg: 'bg-amber-500' },
                     { id: 'monochrome', label: 'Print B&W', bg: 'bg-zinc-700' },
                   ].map((t) => (
                     <button

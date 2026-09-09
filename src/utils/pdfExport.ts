@@ -1,12 +1,12 @@
 import jsPDF from 'jspdf';
 import { AccountInfo, Trade, TradingMetrics } from '../types/trade';
-import { 
-  calculateMetrics, 
-  getMonthsBreakdown, 
-  getSymbolBreakdown, 
-  getDayOfWeekBreakdown, 
+import {
+  calculateMetrics,
+  getMonthsBreakdown,
+  getSymbolBreakdown,
+  getDayOfWeekBreakdown,
   getPropFirmRules,
-  getAIInsights 
+  getAIInsights
 } from './analytics';
 
 export interface PdfExportOptions {
@@ -25,11 +25,11 @@ export interface PdfExportOptions {
   };
   includeNotes: boolean;
   maskAccount: boolean;
-  colorTheme: 'emerald' | 'navy' | 'monochrome';
+  colorTheme: 'emerald' | 'navy' | 'monochrome' | 'gold';
 }
 
 export const defaultPdfExportOptions: PdfExportOptions = {
-  title: 'TradeScrapbook Institutional Performance Report',
+  title: 'TradePulse Performance Report',
   subtitle: 'Institutional Comprehensive Trading Statement',
   dateRange: 'all',
   sections: {
@@ -45,6 +45,296 @@ export const defaultPdfExportOptions: PdfExportOptions = {
   colorTheme: 'emerald',
 };
 
+// ─── Color Palette Registry ─────────────────────────────────────────────────
+const THEMES = {
+  emerald: {
+    primary:   [5,  90,  65]  as [number, number, number], // deep forest
+    accent:    [16, 185, 129] as [number, number, number], // emerald-500
+    accent2:   [20, 184, 166] as [number, number, number], // teal
+    dark:      [15,  23,  42] as [number, number, number],
+    midDark:   [30,  41,  59] as [number, number, number],
+    lightBg:   [240,253,244]  as [number, number, number],
+    cardBg:    [248,250,252]  as [number, number, number],
+    border:    [226,232,240]  as [number, number, number],
+    headerTxt: [255,255,255]  as [number, number, number],
+    subTxt:    [148,163,184]  as [number, number, number],
+    tablHead:  [30, 41,  59]  as [number, number, number],
+  },
+  navy: {
+    primary:   [15,  23,  42] as [number, number, number],
+    accent:    [99, 102, 241] as [number, number, number], // indigo-500
+    accent2:   [139,92, 246]  as [number, number, number], // violet
+    dark:      [15,  23,  42] as [number, number, number],
+    midDark:   [30,  41,  59] as [number, number, number],
+    lightBg:   [238,242,255]  as [number, number, number],
+    cardBg:    [248,250,252]  as [number, number, number],
+    border:    [226,232,240]  as [number, number, number],
+    headerTxt: [255,255,255]  as [number, number, number],
+    subTxt:    [148,163,184]  as [number, number, number],
+    tablHead:  [30, 41,  59]  as [number, number, number],
+  },
+  monochrome: {
+    primary:   [24,  24,  27] as [number, number, number],
+    accent:    [82,  82,  91] as [number, number, number],
+    accent2:   [113,113,122]  as [number, number, number],
+    dark:      [9,   9,  11]  as [number, number, number],
+    midDark:   [39,  39,  42] as [number, number, number],
+    lightBg:   [244,244,245]  as [number, number, number],
+    cardBg:    [250,250,250]  as [number, number, number],
+    border:    [228,228,231]  as [number, number, number],
+    headerTxt: [255,255,255]  as [number, number, number],
+    subTxt:    [161,161,170]  as [number, number, number],
+    tablHead:  [39,  39,  42] as [number, number, number],
+  },
+  gold: {
+    primary:   [120, 53,  15] as [number, number, number], // amber-900
+    accent:    [217,119,  6]  as [number, number, number], // amber-600
+    accent2:   [234,179,  8]  as [number, number, number], // yellow-500
+    dark:      [15,  23,  42] as [number, number, number],
+    midDark:   [30,  41,  59] as [number, number, number],
+    lightBg:   [255,251,235]  as [number, number, number],
+    cardBg:    [248,250,252]  as [number, number, number],
+    border:    [226,232,240]  as [number, number, number],
+    headerTxt: [255,255,255]  as [number, number, number],
+    subTxt:    [148,163,184]  as [number, number, number],
+    tablHead:  [120, 53,  15] as [number, number, number],
+  },
+};
+
+const WIN_COLOR  = [16, 185, 129]  as [number, number, number]; // emerald-500
+const LOSS_COLOR = [239,  68,  68] as [number, number, number]; // red-500
+const MUTED      = [100, 116, 139] as [number, number, number]; // slate-500
+const WHITE      = [255, 255, 255] as [number, number, number];
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function rgb(doc: jsPDF, c: [number,number,number], type: 'fill'|'text'|'draw' = 'text') {
+  if (type === 'fill')  doc.setFillColor(c[0], c[1], c[2]);
+  if (type === 'text')  doc.setTextColor(c[0], c[1], c[2]);
+  if (type === 'draw')  doc.setDrawColor(c[0], c[1], c[2]);
+}
+
+function bold(doc: jsPDF, size: number) { doc.setFont('helvetica', 'bold'); doc.setFontSize(size); }
+function normal(doc: jsPDF, size: number) { doc.setFont('helvetica', 'normal'); doc.setFontSize(size); }
+
+function sectionTitle(
+  doc: jsPDF, theme: typeof THEMES['emerald'],
+  label: string, y: number, pageWidth: number, margin: number
+): number {
+  // Colored left bar + title
+  const barW = 3.5;
+  rgb(doc, theme.accent, 'fill');
+  doc.rect(margin, y, barW, 5.5, 'F');
+
+  bold(doc, 11);
+  rgb(doc, theme.dark, 'text');
+  doc.text(label, margin + barW + 3, y + 4.3);
+
+  // Full-width hairline below
+  rgb(doc, theme.border, 'draw');
+  doc.setLineWidth(0.2);
+  doc.line(margin, y + 6.5, pageWidth - margin, y + 6.5);
+  doc.setLineWidth(0.1);
+
+  return y + 10;
+}
+
+function pill(
+  doc: jsPDF, text: string, x: number, y: number, w: number, h: number,
+  bgColor: [number,number,number], textColor: [number,number,number], textSize = 7
+) {
+  rgb(doc, bgColor, 'fill');
+  doc.roundedRect(x, y, w, h, 1.2, 1.2, 'F');
+  bold(doc, textSize);
+  rgb(doc, textColor, 'text');
+  doc.text(text, x + w / 2, y + h / 2 + 2.2, { align: 'center' });
+}
+
+function kpiCard(
+  doc: jsPDF, theme: typeof THEMES['emerald'],
+  label: string, value: string, valueColor: [number,number,number],
+  x: number, y: number, w: number, h: number,
+  note?: string
+) {
+  // Card background
+  rgb(doc, theme.cardBg, 'fill');
+  rgb(doc, theme.border, 'draw');
+  doc.roundedRect(x, y, w, h, 2, 2, 'FD');
+
+  // Accent top strip
+  rgb(doc, valueColor, 'fill');
+  doc.roundedRect(x, y, w, 1.8, 1, 1, 'F');
+  doc.rect(x, y + 0.8, w, 1, 'F'); // fill bottom corners of strip
+
+  // Label
+  normal(doc, 7);
+  rgb(doc, MUTED, 'text');
+  doc.text(label.toUpperCase(), x + 4, y + 8);
+
+  // Value
+  bold(doc, 10.5);
+  rgb(doc, valueColor, 'text');
+  doc.text(value, x + 4, y + 16);
+
+  // Note
+  if (note) {
+    normal(doc, 6);
+    rgb(doc, MUTED, 'text');
+    doc.text(note, x + 4, y + 21);
+  }
+}
+
+function tableHeader(
+  doc: jsPDF, theme: typeof THEMES['emerald'],
+  headers: string[], xPositions: number[],
+  y: number, contentWidth: number, margin: number
+): number {
+  rgb(doc, theme.tablHead, 'fill');
+  doc.rect(margin, y, contentWidth, 6.5, 'F');
+  bold(doc, 6.5);
+  rgb(doc, WHITE, 'text');
+  headers.forEach((h, i) => doc.text(h, xPositions[i] + 1.5, y + 4.5));
+  return y + 6.5;
+}
+
+function tableRow(
+  doc: jsPDF, theme: typeof THEMES['emerald'],
+  cells: { text: string; color?: [number,number,number]; bold?: boolean }[],
+  xPositions: number[],
+  y: number, contentWidth: number, margin: number, isAlt: boolean,
+  rowH = 5.5
+): number {
+  if (isAlt) {
+    rgb(doc, theme.cardBg, 'fill');
+    doc.rect(margin, y, contentWidth, rowH, 'F');
+  }
+  cells.forEach((cell, i) => {
+    if (cell.bold) bold(doc, 6.5); else normal(doc, 6.5);
+    rgb(doc, cell.color || theme.dark, 'text');
+    doc.text(cell.text, xPositions[i] + 1.5, y + 3.9);
+  });
+  return y + rowH;
+}
+
+// Mini bar chart in PDF (horizontal bars)
+function miniBarChart(
+  doc: jsPDF,
+  entries: { label: string; value: number; color: [number,number,number] }[],
+  x: number, y: number, w: number, barH: number, gap: number,
+  maxVal: number
+) {
+  const labelW = 28;
+  const valW = 18;
+  const barAreaW = w - labelW - valW - 4;
+
+  entries.forEach((e, i) => {
+    const barY = y + i * (barH + gap);
+    // Label
+    normal(doc, 6);
+    rgb(doc, MUTED, 'text');
+    doc.text(e.label.slice(0, 14), x, barY + barH - 1);
+    // Background bar
+    rgb(doc, [235, 237, 240], 'fill');
+    doc.roundedRect(x + labelW, barY, barAreaW, barH, 0.8, 0.8, 'F');
+    // Value bar
+    const fillW = maxVal > 0 ? (Math.abs(e.value) / maxVal) * barAreaW : 0;
+    rgb(doc, e.color, 'fill');
+    if (fillW > 0) doc.roundedRect(x + labelW, barY, fillW, barH, 0.8, 0.8, 'F');
+    // Value text
+    bold(doc, 6);
+    rgb(doc, e.color, 'text');
+    const valStr = `${e.value >= 0 ? '+' : ''}$${e.value.toFixed(0)}`;
+    doc.text(valStr, x + labelW + barAreaW + 2, barY + barH - 1);
+  });
+}
+
+// Equity curve drawn as a polyline
+function equityCurve(
+  doc: jsPDF, theme: typeof THEMES['emerald'],
+  trades: Trade[], x: number, y: number, w: number, h: number
+) {
+  if (trades.length < 2) return;
+
+  // Cumulative equity values
+  const sorted = [...trades].sort((a, b) => a.closeTimestamp - b.closeTimestamp);
+  let running = 0;
+  const equity = sorted.map(t => { running += t.netProfit; return running; });
+
+  const min = Math.min(0, ...equity);
+  const max = Math.max(0, ...equity);
+  const range = max - min || 1;
+
+  // Background
+  rgb(doc, theme.cardBg, 'fill');
+  rgb(doc, theme.border, 'draw');
+  doc.roundedRect(x, y, w, h, 2, 2, 'FD');
+
+  // Zero line
+  const zeroY = y + h - ((0 - min) / range) * h;
+  rgb(doc, theme.border, 'draw');
+  doc.setLineWidth(0.3);
+  doc.setLineDashPattern([1, 1], 0);
+  doc.line(x + 2, zeroY, x + w - 2, zeroY);
+  doc.setLineDashPattern([], 0);
+  doc.setLineWidth(0.1);
+
+  // Equity line
+  const pts = equity.map((v, i) => ({
+    px: x + 2 + (i / (equity.length - 1)) * (w - 4),
+    py: y + h - ((v - min) / range) * (h - 4) - 2,
+  }));
+
+  // Fill area
+  const isPositive = equity[equity.length - 1] >= 0;
+  const fillColor: [number,number,number] = isPositive
+    ? [220, 252, 231]
+    : [254, 226, 226];
+  rgb(doc, fillColor, 'fill');
+  const fillPts = [
+    `${pts[0].px},${y + h - 2}`,
+    ...pts.map(p => `${p.px},${p.py}`),
+    `${pts[pts.length-1].px},${y + h - 2}`,
+  ];
+  // jsPDF doesn't support polygon path directly; approximate with rect fill + line overdraw
+  // Draw a simple fill row by row (lightweight)
+  pts.forEach((pt, i) => {
+    if (i === 0) return;
+    const prev = pts[i - 1];
+    const topY = Math.min(pt.py, prev.py);
+    const fillH = (y + h - 2) - topY;
+    if (fillH > 0) {
+      rgb(doc, fillColor, 'fill');
+      doc.rect(prev.px, topY, pt.px - prev.px, fillH, 'F');
+    }
+  });
+
+  // Line
+  const lineColor: [number,number,number] = isPositive ? WIN_COLOR : LOSS_COLOR;
+  rgb(doc, lineColor, 'draw');
+  doc.setLineWidth(0.8);
+  for (let i = 1; i < pts.length; i++) {
+    doc.line(pts[i-1].px, pts[i-1].py, pts[i].px, pts[i].py);
+  }
+  doc.setLineWidth(0.1);
+
+  // End dot
+  const last = pts[pts.length - 1];
+  rgb(doc, lineColor, 'fill');
+  doc.circle(last.px, last.py, 1.2, 'F');
+
+  // Labels
+  bold(doc, 6);
+  rgb(doc, MUTED, 'text');
+  doc.text('Equity Curve', x + 2.5, y + 4.5);
+
+  const finalVal = equity[equity.length - 1];
+  bold(doc, 7);
+  rgb(doc, lineColor, 'text');
+  doc.text(`${finalVal >= 0 ? '+' : ''}$${finalVal.toFixed(2)}`, x + w - 2, y + 4.5, { align: 'right' });
+}
+
+// ─── Main Export Function ─────────────────────────────────────────────────────
+
 export function exportStatementPdf(
   accountInfo: AccountInfo,
   rawMetrics: TradingMetrics,
@@ -54,465 +344,471 @@ export function exportStatementPdf(
   const options: PdfExportOptions = {
     ...defaultPdfExportOptions,
     ...userOptions,
-    sections: {
-      ...defaultPdfExportOptions.sections,
-      ...(userOptions?.sections || {}),
-    },
+    sections: { ...defaultPdfExportOptions.sections, ...(userOptions?.sections || {}) },
   };
 
-  // 1. Filter trades based on dateRange
+  // ── Filter trades ────────────────────────────────────────────────────────
   let filteredTrades = [...allTrades];
   const now = new Date();
-
   if (options.dateRange === '30days') {
     const cutoff = now.getTime() - 30 * 24 * 60 * 60 * 1000;
     filteredTrades = allTrades.filter(t => t.closeTimestamp >= cutoff);
   } else if (options.dateRange === 'thisMonth') {
-    const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    filteredTrades = allTrades.filter(t => t.closeTime.slice(0, 7).replace(/[./]/g, '-') === currentMonthPrefix);
+    const prefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    filteredTrades = allTrades.filter(t => t.closeTime.slice(0, 7).replace(/[./]/g, '-') === prefix);
   } else if (options.dateRange === 'custom' && options.customStartDate && options.customEndDate) {
     const startTs = new Date(options.customStartDate).getTime();
-    const endTs = new Date(options.customEndDate).getTime() + 86400000;
+    const endTs   = new Date(options.customEndDate).getTime() + 86400000;
     filteredTrades = allTrades.filter(t => t.closeTimestamp >= startTs && t.closeTimestamp <= endTs);
   }
+  if (filteredTrades.length === 0) filteredTrades = [...allTrades];
 
-  // Fallback to all trades if filtered is empty
-  if (filteredTrades.length === 0) {
-    filteredTrades = [...allTrades];
-  }
-
-  // Re-calculate metrics for the active trade scope
   const metrics = calculateMetrics(filteredTrades, accountInfo.balance || 10000);
+  const theme = THEMES[options.colorTheme || 'emerald'];
 
-  // Initialize PDF (A4 Portrait)
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4',
-  });
+  // ── jsPDF init ────────────────────────────────────────────────────────────
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const PW  = doc.internal.pageSize.getWidth();   // 210
+  const PH  = doc.internal.pageSize.getHeight();  // 297
+  const M   = 14;                                  // margin
+  const CW  = PW - M * 2;                          // content width 182
+  let y     = 0;
 
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 14;
-  const contentWidth = pageWidth - margin * 2;
-  let y = margin;
+  // ── Display names ─────────────────────────────────────────────────────────
+  const displayName    = options.maskAccount ? 'Verified Trader'   : (accountInfo.isDemo ? (accountInfo.name    || 'Marcus Sterling')           : (accountInfo.name    || 'Trader'));
+  const displayAccount = options.maskAccount ? `••••${(accountInfo.account || '0000').slice(-4)}` : (accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'));
+  const displayBroker  = options.maskAccount ? 'Regulated Broker'  : (accountInfo.isDemo ? (accountInfo.broker  || 'Apex Capital Markets Ltd')  : (accountInfo.broker  || 'Trading Account'));
+  const platform       = accountInfo.platform || 'MT5';
 
-  // Theme palette
-  const theme = {
-    emerald: {
-      primary: [6, 95, 70], // #065F46
-      accent: [16, 185, 129], // #10B981
-      dark: [15, 23, 42], // #0F172A
-      lightBg: [240, 253, 244], // #F0FDF4
-      cardBg: [248, 250, 252], // #F8FAFC
-      border: [226, 232, 240], // #E2E8F0
-    },
-    navy: {
-      primary: [15, 23, 42], // #0F172A
-      accent: [79, 70, 229], // #4F46E5
-      dark: [15, 23, 42],
-      lightBg: [238, 242, 255],
-      cardBg: [248, 250, 252],
-      border: [226, 232, 240],
-    },
-    monochrome: {
-      primary: [24, 24, 27], // #18181B
-      accent: [82, 82, 91], // #52525B
-      dark: [9, 9, 11],
-      lightBg: [244, 244, 245],
-      cardBg: [250, 250, 250],
-      border: [228, 228, 231],
-    },
-  }[options.colorTheme || 'emerald'];
-
-  const greenColor = [16, 185, 129];
-  const redColor = [239, 68, 68];
-  const grayColor = [100, 116, 139];
-
-  // Helper for auto page-break
-  const checkSpace = (requiredHeight: number) => {
-    if (y + requiredHeight > pageHeight - 16) {
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  const checkSpace = (needed: number) => {
+    if (y + needed > PH - 18) {
       doc.addPage();
-      y = margin;
-      renderRunningHeader();
+      y = M;
+      renderPageHeader();
     }
   };
 
-  const renderRunningHeader = () => {
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(148, 163, 184);
-    doc.text('TradeScrapbook • Performance Statement', margin, y - 4);
-    doc.text(`Account: ${options.maskAccount ? '••••' + accountInfo.account.slice(-4) : accountInfo.account}`, pageWidth - margin, y - 4, { align: 'right' });
-    doc.setDrawColor(...theme.border as [number, number, number]);
-    doc.line(margin, y - 2, pageWidth - margin, y - 2);
+  const renderPageHeader = () => {
+    // Slim running header bar
+    rgb(doc, theme.primary, 'fill');
+    doc.rect(0, 0, PW, 8, 'F');
+    bold(doc, 6);
+    rgb(doc, [255,255,255], 'text');
+    doc.text('TradePulse  •  Performance Statement', M, 5.5);
+    doc.text(`${displayName}  ·  #${displayAccount}  ·  ${new Date().toLocaleDateString()}`, PW - M, 5.5, { align: 'right' });
+    y = 12;
   };
 
-  // ==========================================
-  // 1. HEADER BANNER (Page 1)
-  // ==========================================
-  doc.setFillColor(...theme.primary as [number, number, number]);
-  doc.rect(0, 0, pageWidth, 26, 'F');
+  // ============================================================
+  // PAGE 1: COVER PAGE
+  // ============================================================
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.text(options.title || 'TradeScrapbook Performance Statement', margin, 11);
+  // Full-height gradient header panel (60% of page)
+  const coverH = 130;
+  rgb(doc, theme.primary, 'fill');
+  doc.rect(0, 0, PW, coverH, 'F');
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(203, 213, 225);
-  doc.text(options.subtitle || 'Zero-Knowledge Institutional Trading Analytics Report', margin, 18);
-  doc.text(`Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, pageWidth - margin, 18, { align: 'right' });
+  // Decorative accent stripe at top
+  rgb(doc, theme.accent, 'fill');
+  doc.rect(0, 0, PW, 4, 'F');
 
-  y = 33;
+  // Large circle decoration (top-right)
+  rgb(doc, [255, 255, 255], 'fill');
+  doc.setFillColor(255, 255, 255);
+  doc.setGState(doc.GState({ opacity: 0.04 }));
+  doc.circle(PW - 20, 20, 55, 'F');
+  doc.circle(PW + 10, 80, 60, 'F');
+  doc.setGState(doc.GState({ opacity: 1.0 }));
 
-  // ==========================================
-  // 2. OVERVIEW & CORE KPIS (If enabled)
-  // ==========================================
-  if (options.sections.overview) {
-    // Account Details Box
-    doc.setFillColor(...theme.cardBg as [number, number, number]);
-    doc.setDrawColor(...theme.border as [number, number, number]);
-    doc.roundedRect(margin, y, contentWidth, 24, 2, 2, 'FD');
+  // Logo / Brand
+  bold(doc, 22);
+  rgb(doc, WHITE, 'text');
+  doc.text('TradePulse', M, 24);
+  bold(doc, 8);
+  rgb(doc, theme.accent, 'text');
+  doc.text('INSTITUTIONAL PERFORMANCE REPORT', M, 30);
 
-    const displayName = options.maskAccount 
-      ? 'Verified Trader' 
-      : (accountInfo.isDemo ? (accountInfo.name || 'Marcus Sterling') : (accountInfo.name || 'Trader'));
-    const displayAccount = options.maskAccount 
-      ? `••••${accountInfo.account && accountInfo.account !== 'N/A' ? accountInfo.account.slice(-4) : (accountInfo.isDemo ? '7105' : '••••')}` 
-      : (accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'));
-    const displayBroker = options.maskAccount 
-      ? 'Regulated Broker' 
-      : (accountInfo.isDemo ? (accountInfo.broker || 'Apex Capital Markets Ltd') : (accountInfo.broker || 'Trading Account'));
+  // Horizontal divider
+  rgb(doc, theme.accent, 'draw');
+  doc.setLineWidth(0.5);
+  doc.line(M, 33, M + 60, 33);
+  doc.setLineWidth(0.1);
 
-    doc.setFontSize(9.5);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text(`Trader: ${displayName}`, margin + 4, y + 6);
-    doc.text(`Account: #${displayAccount}`, margin + 4, y + 13);
-    doc.text(`Broker: ${displayBroker}`, margin + 4, y + 20);
+  // Trader info block
+  bold(doc, 16);
+  rgb(doc, WHITE, 'text');
+  doc.text(displayName, M, 46);
 
-    doc.text(`Currency: ${accountInfo.currency || 'USD'}`, margin + 65, y + 6);
-    doc.text(`Closed Trades: ${filteredTrades.length}`, margin + 65, y + 13);
-    doc.text(`Lots Traded: ${metrics.totalVolume.toFixed(2)}`, margin + 65, y + 20);
+  normal(doc, 8.5);
+  rgb(doc, [203, 213, 225], 'text');
+  doc.text(`Account  #${displayAccount}`, M, 54);
+  doc.text(displayBroker, M, 61);
 
-    doc.text(`Starting Balance: $${metrics.initialDeposit.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, margin + 125, y + 6);
-    doc.text(`Ending Equity: $${(accountInfo.equity || metrics.endingBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, margin + 125, y + 13);
-    
-    const returnStr = `${metrics.totalReturnPercent >= 0 ? '+' : ''}${metrics.totalReturnPercent}%`;
-    doc.setTextColor(metrics.totalReturnPercent >= 0 ? greenColor[0] : redColor[0], metrics.totalReturnPercent >= 0 ? greenColor[1] : redColor[1], metrics.totalReturnPercent >= 0 ? greenColor[2] : redColor[2]);
-    doc.text(`Net Return: ${returnStr}`, margin + 125, y + 20);
+  const nowStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text(`Generated: ${nowStr}`, M, 68);
 
-    y += 30;
-
-    // KPI Cards Grid (4 columns x 3 rows)
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text('Executive KPI Scorecard', margin, y);
-    y += 5;
-
-    const kpis = [
-      { label: 'Net Profit', value: `${metrics.netProfit >= 0 ? '+' : ''}$${metrics.netProfit.toFixed(2)}`, color: metrics.netProfit >= 0 ? greenColor : redColor },
-      { label: 'Win Rate', value: `${metrics.winRate}%`, color: metrics.winRate >= 50 ? greenColor : redColor },
-      { label: 'Profit Factor', value: `${metrics.profitFactor}`, color: metrics.profitFactor >= 1.2 ? greenColor : grayColor },
-      { label: 'Total Trades', value: `${metrics.totalTrades}`, color: theme.dark },
-      { label: 'Gross Profit', value: `+$${metrics.grossProfit.toFixed(2)}`, color: greenColor },
-      { label: 'Gross Loss', value: `-$${metrics.grossLoss.toFixed(2)}`, color: redColor },
-      { label: 'Average Win', value: `+$${metrics.avgWin.toFixed(2)}`, color: greenColor },
-      { label: 'Average Loss', value: `-$${metrics.avgLoss.toFixed(2)}`, color: redColor },
-      { label: 'Max Drawdown', value: `-$${metrics.maxDrawdownDollars.toFixed(2)} (${metrics.maxDrawdownPercent}%)`, color: redColor },
-      { label: 'Expectancy', value: `$${metrics.expectancy} / trade`, color: metrics.expectancy >= 0 ? greenColor : redColor },
-      { label: 'Sharpe Ratio', value: `${metrics.sharpeRatio}`, color: metrics.sharpeRatio >= 1 ? greenColor : grayColor },
-      { label: 'Max Win Streak', value: `${metrics.maxWinStreak} Wins`, color: greenColor },
-    ];
-
-    const colWidth = contentWidth / 4;
-    kpis.forEach((kpi, idx) => {
-      const col = idx % 4;
-      const row = Math.floor(idx / 4);
-      const boxX = margin + col * colWidth;
-      const boxY = y + row * 15;
-
-      doc.setFillColor(248, 250, 252);
-      doc.setDrawColor(...theme.border as [number, number, number]);
-      doc.roundedRect(boxX, boxY, colWidth - 2, 13, 1.5, 1.5, 'FD');
-
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(100, 116, 139);
-      doc.text(kpi.label, boxX + 3, boxY + 4);
-
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(kpi.color[0], kpi.color[1], kpi.color[2]);
-      doc.text(kpi.value, boxX + 3, boxY + 10);
-    });
-
-    y += 50;
+  // Platform + account type pills
+  const pX = M;
+  const pY = 74;
+  pill(doc, platform, pX, pY, 22, 8, theme.accent, theme.primary, 7);
+  pill(doc, accountInfo.isDemo ? 'DEMO' : 'LIVE', pX + 25, pY, 22, 8, theme.accent2, theme.primary, 7);
+  if (accountInfo.accountType) {
+    const typeClean = accountInfo.accountType.replace(/[()]/g, '').replace(/,/g, ' ·').trim().slice(0, 30);
+    pill(doc, typeClean, pX + 50, pY, Math.min(80, typeClean.length * 2 + 8), 8, [30, 41, 59], [203, 213, 225], 6.5);
   }
 
-  // ==========================================
-  // 3. PERFORMANCE CALENDAR (All Trades / Months)
-  // ==========================================
-  if (options.sections.calendar) {
-    checkSpace(65);
+  // Large P&L hero stat (right side of cover)
+  const heroX = PW - M - 70;
+  const isProfit = metrics.netProfit >= 0;
+  bold(doc, 28);
+  rgb(doc, isProfit ? WIN_COLOR : LOSS_COLOR, 'text');
+  const heroVal = `${isProfit ? '+' : ''}$${metrics.netProfit.toFixed(2)}`;
+  doc.text(heroVal, PW - M, 50, { align: 'right' });
+  bold(doc, 8);
+  rgb(doc, [148, 163, 184], 'text');
+  doc.text('NET PROFIT / LOSS', PW - M, 56, { align: 'right' });
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text('Performance Calendar & Monthly Heatmap', margin, y);
-    y += 5;
+  bold(doc, 13);
+  rgb(doc, metrics.winRate >= 50 ? WIN_COLOR : LOSS_COLOR, 'text');
+  doc.text(`${metrics.winRate}%`, PW - M, 68, { align: 'right' });
+  bold(doc, 7);
+  rgb(doc, [148, 163, 184], 'text');
+  doc.text('WIN RATE', PW - M, 73, { align: 'right' });
+
+  bold(doc, 10);
+  rgb(doc, [203, 213, 225], 'text');
+  doc.text(`${metrics.totalTrades} Trades  ·  ${metrics.totalVolume.toFixed(2)} Lots`, PW - M, 82, { align: 'right' });
+
+  // Cover summary cards — 4 in a row
+  y = coverH + 10;
+  const cardW = (CW - 9) / 4;
+  const cardH = 32;
+
+  const coverKpis = [
+    { label: 'Profit Factor',   value: `${metrics.profitFactor}x`, color: metrics.profitFactor >= 1.5 ? WIN_COLOR : MUTED, note: metrics.profitFactor >= 1.5 ? 'Excellent edge' : 'Needs work' },
+    { label: 'Expectancy',      value: `$${metrics.expectancy}`,  color: metrics.expectancy >= 0 ? WIN_COLOR : LOSS_COLOR, note: 'Per trade avg' },
+    { label: 'Max Drawdown',    value: `-${metrics.maxDrawdownPercent}%`, color: LOSS_COLOR, note: `-$${metrics.maxDrawdownDollars.toFixed(0)} peak-to-trough` },
+    { label: 'Sharpe Ratio',    value: `${metrics.sharpeRatio}`,  color: metrics.sharpeRatio >= 1 ? WIN_COLOR : MUTED, note: metrics.sharpeRatio >= 1 ? 'Risk-adjusted good' : 'Improve consistency' },
+  ];
+  coverKpis.forEach((kpi, i) => {
+    kpiCard(doc, theme, kpi.label, kpi.value, kpi.color as [number,number,number], M + i * (cardW + 3), y, cardW, cardH, kpi.note);
+  });
+  y += cardH + 6;
+
+  // Equity curve on cover
+  checkSpace(52);
+  equityCurve(doc, theme, filteredTrades, M, y, CW, 46);
+  y += 52;
+
+  // ============================================================
+  // SECTION: OVERVIEW KPI SCORECARD
+  // ============================================================
+  if (options.sections.overview) {
+    checkSpace(10);
+    y = sectionTitle(doc, theme, 'Executive KPI Scorecard', y, PW, M);
+
+    const kpis = [
+      { label: 'Net Profit',      value: `${metrics.netProfit >= 0 ? '+' : ''}$${metrics.netProfit.toFixed(2)}`,  color: metrics.netProfit >= 0 ? WIN_COLOR : LOSS_COLOR },
+      { label: 'Win Rate',        value: `${metrics.winRate}%`,            color: metrics.winRate >= 50 ? WIN_COLOR : LOSS_COLOR },
+      { label: 'Profit Factor',   value: `${metrics.profitFactor}×`,       color: metrics.profitFactor >= 1.2 ? WIN_COLOR : MUTED },
+      { label: 'Total Trades',    value: `${metrics.totalTrades}`,          color: theme.dark },
+      { label: 'Gross Profit',    value: `+$${metrics.grossProfit.toFixed(2)}`, color: WIN_COLOR },
+      { label: 'Gross Loss',      value: `-$${metrics.grossLoss.toFixed(2)}`,   color: LOSS_COLOR },
+      { label: 'Avg Win',         value: `+$${metrics.avgWin.toFixed(2)}`,  color: WIN_COLOR },
+      { label: 'Avg Loss',        value: `-$${metrics.avgLoss.toFixed(2)}`, color: LOSS_COLOR },
+      { label: 'Max Drawdown',    value: `-${metrics.maxDrawdownPercent}%`, color: LOSS_COLOR },
+      { label: 'Expectancy',      value: `$${metrics.expectancy}/trade`,   color: metrics.expectancy >= 0 ? WIN_COLOR : LOSS_COLOR },
+      { label: 'Sharpe Ratio',    value: `${metrics.sharpeRatio}`,          color: metrics.sharpeRatio >= 1 ? WIN_COLOR : MUTED },
+      { label: 'Max Win Streak',  value: `${metrics.maxWinStreak} wins`,   color: WIN_COLOR },
+      { label: 'Max Loss Streak', value: `${metrics.maxLossStreak} losses`, color: LOSS_COLOR },
+      { label: 'Win/Loss Ratio',  value: `${metrics.winLossRatio}×`,       color: theme.dark },
+      { label: 'Total Volume',    value: `${metrics.totalVolume.toFixed(2)} lots`, color: theme.dark },
+      { label: 'Total Return',    value: `${metrics.totalReturnPercent >= 0 ? '+' : ''}${metrics.totalReturnPercent}%`, color: metrics.totalReturnPercent >= 0 ? WIN_COLOR : LOSS_COLOR },
+    ];
+
+    const cols = 4;
+    const kW   = (CW - (cols - 1) * 2) / cols;
+    const kH   = 28;
+    const rowH = kH + 3;
+
+    kpis.forEach((kpi, idx) => {
+      const col = idx % cols;
+      const row = Math.floor(idx / cols);
+      if (col === 0 && row > 0) checkSpace(rowH + 2);
+      kpiCard(doc, theme, kpi.label, kpi.value, kpi.color as [number,number,number],
+        M + col * (kW + 2), y + row * rowH, kW, kH);
+    });
+
+    const totalRows = Math.ceil(kpis.length / cols);
+    y += totalRows * rowH + 6;
+
+    // Long vs Short split
+    checkSpace(22);
+    rgb(doc, theme.cardBg, 'fill');
+    rgb(doc, theme.border, 'draw');
+    doc.roundedRect(M, y, CW, 18, 2, 2, 'FD');
+
+    // Long bar
+    const barW2 = (CW - 16) / 2 - 4;
+    bold(doc, 7.5);
+    rgb(doc, WIN_COLOR, 'text');
+    doc.text(`▲ LONG TRADES`, M + 4, y + 6);
+    normal(doc, 6.5);
+    rgb(doc, MUTED, 'text');
+    doc.text(`${metrics.longTrades} trades · ${metrics.longWinRate}% win rate · ${metrics.longWins} wins`, M + 4, y + 12);
+
+    bold(doc, 7.5);
+    rgb(doc, LOSS_COLOR, 'text');
+    doc.text(`▼ SHORT TRADES`, M + CW / 2 + 4, y + 6);
+    normal(doc, 6.5);
+    rgb(doc, MUTED, 'text');
+    doc.text(`${metrics.shortTrades} trades · ${metrics.shortWinRate}% win rate · ${metrics.shortWins} wins`, M + CW / 2 + 4, y + 12);
+
+    // Vertical divider
+    rgb(doc, theme.border, 'draw');
+    doc.line(M + CW / 2, y + 3, M + CW / 2, y + 15);
+
+    y += 24;
+  }
+
+  // ============================================================
+  // SECTION: PERFORMANCE CALENDAR
+  // ============================================================
+  if (options.sections.calendar) {
+    checkSpace(20);
+    y = sectionTitle(doc, theme, 'Performance Calendar & Monthly Heatmap', y, PW, M);
 
     const months = getMonthsBreakdown(filteredTrades);
 
     months.forEach((monthData) => {
-      checkSpace(65);
+      checkSpace(72);
 
-      // Month Title Bar
-      doc.setFillColor(241, 245, 249);
-      doc.setDrawColor(...theme.border as [number, number, number]);
-      doc.rect(margin, y, contentWidth, 7, 'FD');
+      // Month header pill
+      rgb(doc, monthData.netProfit >= 0 ? theme.lightBg : [255, 241, 242], 'fill');
+      rgb(doc, monthData.netProfit >= 0 ? theme.accent : LOSS_COLOR, 'draw');
+      doc.roundedRect(M, y, CW, 7, 1.5, 1.5, 'FD');
 
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...theme.dark as [number, number, number]);
-      doc.text(monthData.name, margin + 3, y + 4.8);
+      bold(doc, 8.5);
+      rgb(doc, theme.dark, 'text');
+      doc.text(monthData.name, M + 4, y + 5);
 
       const monthPnlStr = `${monthData.netProfit >= 0 ? '+' : ''}$${monthData.netProfit.toFixed(2)}`;
-      doc.setTextColor(monthData.netProfit >= 0 ? greenColor[0] : redColor[0], monthData.netProfit >= 0 ? greenColor[1] : redColor[1], monthData.netProfit >= 0 ? greenColor[2] : redColor[2]);
-      doc.text(`Net: ${monthPnlStr}`, margin + 80, y + 4.8);
-      doc.setTextColor(15, 23, 42);
-      doc.text(`Win Rate: ${monthData.winRate}%  •  Trades: ${monthData.totalTrades}`, margin + 125, y + 4.8);
+      bold(doc, 8);
+      rgb(doc, monthData.netProfit >= 0 ? WIN_COLOR : LOSS_COLOR, 'text');
+      doc.text(monthPnlStr, M + 78, y + 5);
 
-      y += 7;
+      normal(doc, 7);
+      rgb(doc, MUTED, 'text');
+      doc.text(`${monthData.winRate}% WR  ·  ${monthData.totalTrades} trades  ·  ${monthData.winCount}W / ${monthData.lossCount}L`, M + 108, y + 5);
+      y += 8;
 
-      // 7-day calendar header: Mon, Tue, Wed, Thu, Fri, Sat, Sun
-      const dayColWidth = contentWidth / 7;
+      // Day-of-week header
+      const dayColW = CW / 7;
       const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-      doc.setFillColor(30, 41, 59);
-      doc.rect(margin, y, contentWidth, 5, 'F');
-      doc.setFontSize(6.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(255, 255, 255);
-      dayNames.forEach((name, i) => {
-        doc.text(name, margin + i * dayColWidth + dayColWidth / 2, y + 3.5, { align: 'center' });
-      });
-
+      rgb(doc, theme.midDark, 'fill');
+      doc.rect(M, y, CW, 5, 'F');
+      bold(doc, 6.5);
+      rgb(doc, WHITE, 'text');
+      dayNames.forEach((d, i) => doc.text(d, M + i * dayColW + dayColW / 2, y + 3.6, { align: 'center' }));
       y += 5;
 
-      // Calendar grid calculation
-      // monthData.firstDayOfWeek: 0 = Sun, 1 = Mon ...
-      // In Mon-Sun grid: Mon=0, Tue=1, Wed=2, Thu=3, Fri=4, Sat=5, Sun=6
+      // Calendar cells
       let startCol = (monthData.firstDayOfWeek + 6) % 7;
       let curCol = startCol;
       let curRowY = y;
-      const cellHeight = 9.5;
+      const cellH = 11;
 
-      // Draw blank leading cells
+      // Blank leading cells
       for (let b = 0; b < startCol; b++) {
-        doc.setFillColor(250, 250, 250);
-        doc.setDrawColor(241, 245, 249);
-        doc.rect(margin + b * dayColWidth, curRowY, dayColWidth, cellHeight, 'FD');
+        rgb(doc, [250, 250, 252], 'fill');
+        rgb(doc, [238, 240, 244], 'draw');
+        doc.rect(M + b * dayColW, curRowY, dayColW, cellH, 'FD');
       }
 
-      for (let dayNum = 1; dayNum <= monthData.daysInMonth; dayNum++) {
-        const dateStr = `${monthData.year}-${String(monthData.month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      for (let d = 1; d <= monthData.daysInMonth; d++) {
+        const dateStr = `${monthData.year}-${String(monthData.month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const dayData = monthData.dailySummaries[dateStr];
-        const cellX = margin + curCol * dayColWidth;
+        const cellX = M + curCol * dayColW;
 
         if (dayData && dayData.tradesCount > 0) {
-          const isProfit = dayData.netProfit >= 0;
-          // Green or Red tint
-          doc.setFillColor(isProfit ? 236 : 254, isProfit ? 253 : 242, isProfit ? 245 : 242);
-          doc.setDrawColor(isProfit ? 16 : 239, isProfit ? 185 : 68, isProfit ? 129 : 68);
-          doc.rect(cellX, curRowY, dayColWidth, cellHeight, 'FD');
+          const isP = dayData.netProfit >= 0;
+          // Intensity-based alpha tint
+          const alpha = Math.min(0.95, 0.25 + Math.abs(dayData.netProfit) / 200);
+          const r = isP ? Math.round(220 + (1 - alpha) * 35) : Math.round(254 - (1 - alpha) * 10);
+          const g = isP ? Math.round(252 - (1 - alpha) * 30) : Math.round(226 - (1 - alpha) * 30);
+          const b2 = isP ? Math.round(231 - (1 - alpha) * 30) : Math.round(226 - (1 - alpha) * 30);
+
+          doc.setFillColor(r, g, b2);
+          rgb(doc, isP ? WIN_COLOR : LOSS_COLOR, 'draw');
+          doc.rect(cellX, curRowY, dayColW, cellH, 'FD');
 
           // Day number
-          doc.setFontSize(6.5);
-          doc.setFont('helvetica', 'bold');
-          doc.setTextColor(51, 65, 85);
-          doc.text(`${dayNum}`, cellX + 1.5, curRowY + 3.5);
+          bold(doc, 6.5);
+          rgb(doc, [51, 65, 85], 'text');
+          doc.text(`${d}`, cellX + 1.5, curRowY + 4);
 
-          // PnL & trade count
-          doc.setFontSize(6.5);
-          doc.setTextColor(isProfit ? greenColor[0] : redColor[0], isProfit ? greenColor[1] : redColor[1], isProfit ? greenColor[2] : redColor[2]);
-          const dayPnlStr = `${isProfit ? '+' : ''}$${Math.round(dayData.netProfit)}`;
-          doc.text(dayPnlStr, cellX + dayColWidth - 1.5, curRowY + 4, { align: 'right' });
+          // P&L
+          bold(doc, 6.5);
+          rgb(doc, isP ? WIN_COLOR : LOSS_COLOR, 'text');
+          const dayPnl = `${isP ? '+' : ''}$${Math.round(Math.abs(dayData.netProfit))}`;
+          doc.text(dayPnl, cellX + dayColW - 1.5, curRowY + 7, { align: 'right' });
 
-          doc.setFontSize(5.5);
-          doc.setTextColor(100, 116, 139);
-          doc.text(`${dayData.tradesCount} trd`, cellX + dayColWidth - 1.5, curRowY + 7.5, { align: 'right' });
+          // Trade count
+          normal(doc, 5.5);
+          rgb(doc, [100, 116, 139], 'text');
+          doc.text(`${dayData.tradesCount}t`, cellX + dayColW - 1.5, curRowY + 10.5, { align: 'right' });
+
         } else {
-          // Empty inactive day
-          doc.setFillColor(255, 255, 255);
-          doc.setDrawColor(235, 238, 242);
-          doc.rect(cellX, curRowY, dayColWidth, cellHeight, 'FD');
-
-          doc.setFontSize(6.5);
-          doc.setFont('helvetica', 'normal');
-          doc.setTextColor(160, 174, 192);
-          doc.text(`${dayNum}`, cellX + 1.5, curRowY + 3.5);
+          doc.setFillColor(252, 252, 254);
+          rgb(doc, [238, 240, 244], 'draw');
+          doc.rect(cellX, curRowY, dayColW, cellH, 'FD');
+          normal(doc, 6);
+          rgb(doc, [200, 210, 220], 'text');
+          doc.text(`${d}`, cellX + 1.5, curRowY + 4);
         }
 
         curCol++;
-        if (curCol === 7) {
-          curCol = 0;
-          curRowY += cellHeight;
-        }
+        if (curCol === 7) { curCol = 0; curRowY += cellH; }
       }
 
-      // Fill trailing cells
+      // Trailing blank cells
       if (curCol > 0) {
         while (curCol < 7) {
-          doc.setFillColor(250, 250, 250);
-          doc.setDrawColor(241, 245, 249);
-          doc.rect(margin + curCol * dayColWidth, curRowY, dayColWidth, cellHeight, 'FD');
+          rgb(doc, [250, 250, 252], 'fill');
+          rgb(doc, [238, 240, 244], 'draw');
+          doc.rect(M + curCol * dayColW, curRowY, dayColW, cellH, 'FD');
           curCol++;
         }
-        curRowY += cellHeight;
+        curRowY += cellH;
       }
 
       y = curRowY + 6;
     });
 
-    // Monthly Performance Summary Table
-    checkSpace(28);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text('Monthly Overview Breakdown', margin, y);
+    // Monthly summary table
+    checkSpace(30);
+    bold(doc, 8);
+    rgb(doc, theme.dark, 'text');
+    doc.text('Monthly Performance Breakdown', M, y);
     y += 4;
 
-    const mHeaders = ['Month', 'Trades', 'Win Rate', 'Gross Profit', 'Gross Loss', 'Net P&L', 'Best Day'];
-    const mHeaderX = [margin, margin + 35, margin + 55, margin + 78, margin + 104, margin + 130, margin + 155];
+    const mHdrs = ['Month', 'Trades', 'Win %', 'Winners', 'Gross Profit', 'Gross Loss', 'Net P&L', 'Best Day', 'Worst Day'];
+    const mX    = [M, M+28, M+47, M+62, M+78, M+106, M+130, M+153, M+170];
+    y = tableHeader(doc, theme, mHdrs, mX, y, CW, M);
 
-    doc.setFillColor(30, 41, 59);
-    doc.rect(margin, y, contentWidth, 5.5, 'F');
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(255, 255, 255);
-    mHeaders.forEach((h, i) => doc.text(h, mHeaderX[i] + 1, y + 4));
-    y += 5.5;
-
-    months.forEach((m, idx) => {
-      checkSpace(6);
-      if (idx % 2 === 0) {
-        doc.setFillColor(248, 250, 252);
-        doc.rect(margin, y, contentWidth, 5.5, 'F');
-      }
-
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(15, 23, 42);
-      doc.text(m.name, mHeaderX[0] + 1, y + 4);
-      doc.text(`${m.totalTrades}`, mHeaderX[1] + 1, y + 4);
-      doc.text(`${m.winRate}%`, mHeaderX[2] + 1, y + 4);
-      doc.setTextColor(greenColor[0], greenColor[1], greenColor[2]);
-      doc.text(`+$${m.grossProfit.toFixed(0)}`, mHeaderX[3] + 1, y + 4);
-      doc.setTextColor(redColor[0], redColor[1], redColor[2]);
-      doc.text(`-$${m.grossLoss.toFixed(0)}`, mHeaderX[4] + 1, y + 4);
-
-      doc.setTextColor(m.netProfit >= 0 ? greenColor[0] : redColor[0], m.netProfit >= 0 ? greenColor[1] : redColor[1], m.netProfit >= 0 ? greenColor[2] : redColor[2]);
-      doc.text(`${m.netProfit >= 0 ? '+' : ''}$${m.netProfit.toFixed(2)}`, mHeaderX[5] + 1, y + 4);
-
-      doc.setTextColor(15, 23, 42);
-      doc.text(m.bestDay.date !== '-' ? `${m.bestDay.date.slice(5)} (+$${Math.round(m.bestDay.pnl)})` : '-', mHeaderX[6] + 1, y + 4);
-
-      y += 5.5;
-    });
-
-    y += 6;
-  }
-
-  // ==========================================
-  // 4. DEEP STATISTICAL ANALYTICS
-  // ==========================================
-  if (options.sections.deepAnalytics) {
-    checkSpace(55);
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text('Deep Statistical Analytics & Edge Breakdown', margin, y);
-    y += 5;
-
-    // Long vs Short Split Box
-    doc.setFillColor(248, 250, 252);
-    doc.setDrawColor(...theme.border as [number, number, number]);
-    doc.roundedRect(margin, y, contentWidth, 16, 1.5, 1.5, 'FD');
-
-    doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(16, 185, 129);
-    doc.text(`LONG TRADES: ${metrics.longTrades} (${metrics.longWins} Wins • ${metrics.longWinRate}% Win Rate)`, margin + 4, y + 6);
-    doc.setTextColor(239, 68, 68);
-    doc.text(`SHORT TRADES: ${metrics.shortTrades} (${metrics.shortWins} Wins • ${metrics.shortWinRate}% Win Rate)`, margin + 4, y + 12);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Avg Hold Time: ${metrics.avgHoldTimeMinutes} mins`, margin + 115, y + 6);
-    doc.text(`Best Trade Payout: +$${metrics.largestWin.toFixed(2)}`, margin + 115, y + 12);
-
-    y += 20;
-
-    // Symbol Breakdown Table
-    const symbols = getSymbolBreakdown(filteredTrades);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text('Symbol & Instrument Performance', margin, y);
-    y += 4;
-
-    const sHeaders = ['Symbol', 'Trades', 'Win Rate', 'Gross Profit', 'Gross Loss', 'Net P&L', 'Profit Factor'];
-    const sHeaderX = [margin, margin + 30, margin + 55, margin + 80, margin + 108, margin + 135, margin + 160];
-
-    doc.setFillColor(30, 41, 59);
-    doc.rect(margin, y, contentWidth, 5.5, 'F');
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(255, 255, 255);
-    sHeaders.forEach((h, i) => doc.text(h, sHeaderX[i] + 1, y + 4));
-    y += 5.5;
-
-    symbols.forEach((s, idx) => {
-      checkSpace(6);
-      if (idx % 2 === 0) {
-        doc.setFillColor(248, 250, 252);
-        doc.rect(margin, y, contentWidth, 5.5, 'F');
-      }
-
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(15, 23, 42);
-      doc.text(s.symbol, sHeaderX[0] + 1, y + 4);
-      doc.text(`${s.trades}`, sHeaderX[1] + 1, y + 4);
-      doc.text(`${s.winRate}%`, sHeaderX[2] + 1, y + 4);
-      doc.setTextColor(greenColor[0], greenColor[1], greenColor[2]);
-      doc.text(`+$${s.grossProfit.toFixed(0)}`, sHeaderX[3] + 1, y + 4);
-      doc.setTextColor(redColor[0], redColor[1], redColor[2]);
-      doc.text(`-$${s.grossLoss.toFixed(0)}`, sHeaderX[4] + 1, y + 4);
-
-      doc.setTextColor(s.pnl >= 0 ? greenColor[0] : redColor[0], s.pnl >= 0 ? greenColor[1] : redColor[1], s.pnl >= 0 ? greenColor[2] : redColor[2]);
-      doc.text(`${s.pnl >= 0 ? '+' : ''}$${s.pnl.toFixed(2)}`, sHeaderX[5] + 1, y + 4);
-      doc.setTextColor(15, 23, 42);
-      doc.text(`${s.profitFactor}`, sHeaderX[6] + 1, y + 4);
-
-      y += 5.5;
+    getMonthsBreakdown(filteredTrades).forEach((m, i) => {
+      checkSpace(7);
+      y = tableRow(doc, theme, [
+        { text: m.name },
+        { text: `${m.totalTrades}` },
+        { text: `${m.winRate}%`, color: m.winRate >= 50 ? WIN_COLOR : LOSS_COLOR },
+        { text: `${m.winCount}W / ${m.lossCount}L` },
+        { text: `+$${m.grossProfit.toFixed(0)}`, color: WIN_COLOR },
+        { text: `-$${m.grossLoss.toFixed(0)}`, color: LOSS_COLOR },
+        { text: `${m.netProfit >= 0 ? '+' : ''}$${m.netProfit.toFixed(2)}`, color: m.netProfit >= 0 ? WIN_COLOR : LOSS_COLOR, bold: true },
+        { text: m.bestDay.date !== '-' ? `+$${Math.round(m.bestDay.pnl)}` : '-', color: WIN_COLOR },
+        { text: m.worstDay.date !== '-' ? `-$${Math.round(Math.abs(m.worstDay.pnl || 0))}` : '-', color: LOSS_COLOR },
+      ], mX, y, CW, M, i % 2 === 0, 6);
     });
 
     y += 8;
   }
 
-  // ==========================================
-  // 5. TRADESCRAPBOOK AI COACH & DISCIPLINE AUDIT
-  // ==========================================
-  if (options.sections.aiCoach) {
-    checkSpace(40);
+  // ============================================================
+  // SECTION: DEEP ANALYTICS
+  // ============================================================
+  if (options.sections.deepAnalytics) {
+    checkSpace(20);
+    y = sectionTitle(doc, theme, 'Deep Statistical Analytics & Edge Breakdown', y, PW, M);
 
-    const coachInsights = getAIInsights(filteredTrades, metrics);
+    // Symbol performance mini bar chart (left) + Day-of-week table (right)
+    const symbols    = getSymbolBreakdown(filteredTrades);
+    const dayOfWeek  = getDayOfWeekBreakdown(filteredTrades);
+    const maxSymPnl  = Math.max(...symbols.map(s => Math.abs(s.pnl)), 1);
+
+    const leftW  = CW * 0.55 - 2;
+    const rightW = CW * 0.45 - 2;
+
+    // Symbol bar chart
+    bold(doc, 7.5);
+    rgb(doc, theme.dark, 'text');
+    doc.text('Instrument Net P&L Ranking', M, y);
+
+    const barH  = 6;
+    const barGp = 2;
+    const barTopY = y + 4;
+    const visibleSymbols = symbols.slice(0, 10);
+
+    miniBarChart(doc, visibleSymbols.map(s => ({
+      label: s.symbol,
+      value: s.pnl,
+      color: s.pnl >= 0 ? WIN_COLOR : LOSS_COLOR,
+    })), M, barTopY, leftW, barH, barGp, maxSymPnl);
+
+    y += 4 + visibleSymbols.length * (barH + barGp) + 6;
+
+    // Symbol detail table
+    checkSpace(10);
+    const sHdrs = ['Symbol', 'Trades', 'Win %', 'Avg Win', 'Avg Loss', 'Net P&L', 'PF'];
+    const sX    = [M, M+25, M+43, M+62, M+88, M+114, M+145];
+    y = tableHeader(doc, theme, sHdrs, sX, y, CW, M);
+
+    symbols.forEach((s, i) => {
+      checkSpace(6.5);
+      y = tableRow(doc, theme, [
+        { text: s.symbol, bold: true },
+        { text: `${s.trades}` },
+        { text: `${s.winRate}%`, color: s.winRate >= 50 ? WIN_COLOR : LOSS_COLOR },
+        { text: `+$${(s.grossProfit / Math.max(s.wins, 1)).toFixed(0)}`, color: WIN_COLOR },
+        { text: `-$${(s.grossLoss   / Math.max(s.trades - s.wins, 1)).toFixed(0)}`, color: LOSS_COLOR },
+        { text: `${s.pnl >= 0 ? '+' : ''}$${s.pnl.toFixed(2)}`, color: s.pnl >= 0 ? WIN_COLOR : LOSS_COLOR, bold: true },
+        { text: `${s.profitFactor}×`, color: s.profitFactor >= 1.2 ? WIN_COLOR : MUTED },
+      ], sX, y, CW, M, i % 2 === 0);
+    });
+
+    y += 6;
+
+    // Day-of-week table
+    if (dayOfWeek && dayOfWeek.length > 0) {
+      checkSpace(18);
+      bold(doc, 7.5);
+      rgb(doc, theme.dark, 'text');
+      doc.text('Day-of-Week Edge Analysis', M, y);
+      y += 3;
+
+      const dHdrs = ['Day', 'Trades', 'Win %', 'Avg P&L', 'Total P&L', 'Best', 'Verdict'];
+      const dX    = [M, M+22, M+40, M+58, M+82, M+110, M+138];
+      y = tableHeader(doc, theme, dHdrs, dX, y, CW, M);
+
+      dayOfWeek.forEach((d, i) => {
+        checkSpace(6);
+        const verdict = d.winRate >= 60 ? 'STRONG EDGE' : d.winRate >= 50 ? 'Positive' : d.winRate >= 40 ? 'Marginal' : 'AVOID';
+        const verdictColor = d.winRate >= 60 ? WIN_COLOR : d.winRate >= 50 ? WIN_COLOR : d.winRate >= 40 ? MUTED : LOSS_COLOR;
+        y = tableRow(doc, theme, [
+          { text: d.day, bold: true },
+          { text: `${d.trades}` },
+          { text: `${d.winRate}%`, color: d.winRate >= 50 ? WIN_COLOR : LOSS_COLOR },
+          { text: `${d.pnl >= 0 ? '+' : ''}$${d.trades > 0 ? (d.pnl / d.trades).toFixed(2) : '0.00'}`, color: d.pnl >= 0 ? WIN_COLOR : LOSS_COLOR },
+          { text: `${d.pnl >= 0 ? '+' : ''}$${d.pnl.toFixed(2)}`, color: d.pnl >= 0 ? WIN_COLOR : LOSS_COLOR, bold: true },
+          { text: '-', color: WIN_COLOR },
+          { text: verdict, color: verdictColor, bold: true },
+        ], dX, y, CW, M, i % 2 === 0);
+      });
+
+      y += 8;
+    }
+  }
+
+  // ============================================================
+  // SECTION: AI PSYCHOLOGY & DISCIPLINE AUDIT
+  // ============================================================
+  if (options.sections.aiCoach) {
+    checkSpace(55);
+    y = sectionTitle(doc, theme, 'Psychology & Discipline Audit', y, PW, M);
+
+    // Compute discipline metrics
     let revengeCount = 0;
     for (let i = 0; i < filteredTrades.length - 1; i++) {
       if (filteredTrades[i].netProfit < 0) {
@@ -520,203 +816,290 @@ export function exportStatementPdf(
         if (diffMin >= 0 && diffMin <= 15) revengeCount++;
       }
     }
-    const tradesWithSL = filteredTrades.filter(t => t.sl !== null && t.sl !== undefined && t.sl > 0).length;
+    const tradesWithSL = filteredTrades.filter(t => t.sl !== null && t.sl !== undefined && (t.sl as number) > 0).length;
     const slPct = filteredTrades.length > 0 ? (tradesWithSL / filteredTrades.length) * 100 : 100;
     const disciplineScore = Math.min(100, Math.max(30, Math.round((slPct * 0.35) + Math.max(0, 35 - revengeCount * 10) + 30)));
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text('TradeScrapbook AI Psychology & Discipline Audit', margin, y);
-    y += 5;
+    // Score ring (simple circle gauge look)
+    const cx = M + 22;
+    const cy = y + 22;
+    const cr = 16;
 
-    doc.setFillColor(248, 250, 252);
-    doc.setDrawColor(...theme.border as [number, number, number]);
-    doc.roundedRect(margin, y, contentWidth, 24, 2, 2, 'FD');
+    // Outer track
+    rgb(doc, theme.border, 'draw');
+    doc.setLineWidth(3);
+    doc.circle(cx, cy, cr, 'S');
 
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(16, 185, 129);
-    doc.text(`Overall Discipline Score: ${disciplineScore}/100 (Institutional Grade)`, margin + 4, y + 6);
+    // Score arc (approximate with filled arc color)
+    const scoreColor: [number,number,number] = disciplineScore >= 70 ? WIN_COLOR : disciplineScore >= 50 ? [217, 119, 6] : LOSS_COLOR;
+    rgb(doc, scoreColor, 'draw');
+    doc.setLineWidth(3);
+    // Approximate arc by drawing overlapping short lines in a circle pattern
+    const totalAngle = (disciplineScore / 100) * 360;
+    for (let angle = -90; angle < -90 + totalAngle; angle += 3) {
+      const rad1 = (angle * Math.PI) / 180;
+      const rad2 = ((angle + 4) * Math.PI) / 180;
+      doc.line(
+        cx + Math.cos(rad1) * cr, cy + Math.sin(rad1) * cr,
+        cx + Math.cos(rad2) * cr, cy + Math.sin(rad2) * cr
+      );
+    }
+    doc.setLineWidth(0.1);
 
-    doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(51, 65, 85);
-    doc.text(`• Revenge Trading Audit: ${revengeCount} rapid tilt entries detected within 15 mins of loss.`, margin + 4, y + 12);
-    doc.text(`• Hold-Time Efficiency: Average trade duration ${metrics.avgHoldTimeMinutes}m. Disciplined execution pace.`, margin + 4, y + 17);
-    doc.text(`• Capital Protection: Max Drawdown contained at ${metrics.maxDrawdownPercent}% ($${metrics.maxDrawdownDollars.toFixed(0)}).`, margin + 4, y + 22);
+    // Score text
+    bold(doc, 16);
+    rgb(doc, scoreColor, 'text');
+    doc.text(`${disciplineScore}`, cx, cy + 2, { align: 'center' });
+    normal(doc, 5.5);
+    rgb(doc, MUTED, 'text');
+    doc.text('/100', cx, cy + 6, { align: 'center' });
 
-    y += 29;
+    // Discipline breakdown
+    const auditX = M + 44;
+    const auditItems = [
+      {
+        label: 'Revenge Trading',
+        text: revengeCount === 0 ? '✓ None detected' : `⚠ ${revengeCount} rapid entries after losses`,
+        color: revengeCount === 0 ? WIN_COLOR : LOSS_COLOR,
+        note: 'Trade opened within 15min of a loss = revenge flag',
+      },
+      {
+        label: 'Stop-Loss Coverage',
+        text: `${slPct.toFixed(0)}% of trades have SL set`,
+        color: slPct >= 80 ? WIN_COLOR : slPct >= 50 ? [217, 119, 6] as [number,number,number] : LOSS_COLOR,
+        note: `${tradesWithSL} / ${filteredTrades.length} positions protected`,
+      },
+      {
+        label: 'Hold Time Efficiency',
+        text: `Avg ${metrics.avgHoldTimeMinutes}m per trade`,
+        color: theme.dark,
+        note: `Max win streak: ${metrics.maxWinStreak} · Max loss streak: ${metrics.maxLossStreak}`,
+      },
+      {
+        label: 'Capital Protection',
+        text: `Max drawdown: -${metrics.maxDrawdownPercent}%  (-$${metrics.maxDrawdownDollars.toFixed(0)})`,
+        color: metrics.maxDrawdownPercent <= 5 ? WIN_COLOR : metrics.maxDrawdownPercent <= 10 ? [217, 119, 6] as [number,number,number] : LOSS_COLOR,
+        note: metrics.maxDrawdownPercent <= 5 ? 'Excellent risk control' : metrics.maxDrawdownPercent <= 10 ? 'Within prop firm limits' : 'Review risk per trade',
+      },
+    ];
+
+    auditItems.forEach((item, i) => {
+      const itemY = y + i * 11;
+      bold(doc, 7);
+      rgb(doc, item.color as [number,number,number], 'text');
+      doc.text(item.text, auditX, itemY + 4.5);
+      normal(doc, 6);
+      rgb(doc, MUTED, 'text');
+      doc.text(`${item.label}: ${item.note}`, auditX, itemY + 9);
+    });
+
+    y += 50;
+
+    // AI Insights
+    checkSpace(10);
+    const insights = getAIInsights(filteredTrades, metrics);
+    if (insights.length > 0) {
+      bold(doc, 7.5);
+      rgb(doc, theme.dark, 'text');
+      doc.text('AI Coach Recommendations', M, y);
+      y += 4;
+
+      insights.slice(0, 5).forEach((ins) => {
+        checkSpace(14);
+        const isWarn = ins.type === 'warning';
+        const isSucc = ins.type === 'success';
+        const bgColor: [number,number,number] = isWarn ? [255, 247, 237] : isSucc ? [240, 253, 244] : [248, 250, 252];
+        const lineColor: [number,number,number] = isWarn ? [217, 119, 6] : isSucc ? WIN_COLOR : theme.accent;
+
+        rgb(doc, bgColor, 'fill');
+        rgb(doc, lineColor, 'draw');
+        doc.roundedRect(M, y, CW, 12, 1.5, 1.5, 'FD');
+
+        // Left accent bar
+        rgb(doc, lineColor, 'fill');
+        doc.roundedRect(M, y, 2.5, 12, 1, 1, 'F');
+        doc.rect(M, y + 5, 2.5, 7, 'F');
+
+        bold(doc, 7);
+        rgb(doc, theme.dark, 'text');
+        doc.text(ins.title, M + 5, y + 5);
+        normal(doc, 6.5);
+        rgb(doc, MUTED, 'text');
+        const lines = doc.splitTextToSize(ins.description, CW - 10);
+        doc.text(lines[0] || '', M + 5, y + 9.5);
+
+        y += 14;
+      });
+    }
+
+    y += 4;
   }
 
-  // ==========================================
-  // 6. PROP FIRM CHALLENGE MONITOR
-  // ==========================================
+  // ============================================================
+  // SECTION: PROP FIRM COMPLIANCE
+  // ============================================================
   if (options.sections.propFirm) {
-    checkSpace(35);
+    checkSpace(30);
+    y = sectionTitle(doc, theme, 'Prop Firm Evaluation Monitor (FTMO / The5ers)', y, PW, M);
 
     const rules = getPropFirmRules(filteredTrades, accountInfo.balance || 10000);
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text('Prop Firm Evaluation Monitor (FTMO / The5ers Rules)', margin, y);
-    y += 5;
+    const rHdrs = ['Evaluation Rule', 'Allowed', 'Current', 'Used %', 'Compliance'];
+    const rX    = [M, M+72, M+98, M+120, M+148];
+    y = tableHeader(doc, theme, rHdrs, rX, y, CW, M);
 
-    const rHeaders = ['Evaluation Rule', 'Allowed Limit', 'Current Level', 'Compliance Status'];
-    const rHeaderX = [margin, margin + 65, margin + 105, margin + 145];
-
-    doc.setFillColor(30, 41, 59);
-    doc.rect(margin, y, contentWidth, 5.5, 'F');
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(255, 255, 255);
-    rHeaders.forEach((h, i) => doc.text(h, rHeaderX[i] + 1, y + 4));
-    y += 5.5;
-
-    rules.forEach((rule, idx) => {
-      checkSpace(6);
-      if (idx % 2 === 0) {
-        doc.setFillColor(248, 250, 252);
-        doc.rect(margin, y, contentWidth, 5.5, 'F');
-      }
-
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(15, 23, 42);
-      doc.text(rule.name, rHeaderX[0] + 1, y + 4);
-      doc.text(`${rule.limit}%`, rHeaderX[1] + 1, y + 4);
-      doc.text(`${rule.current}%`, rHeaderX[2] + 1, y + 4);
-
-      const isPassed = rule.status === 'passed';
+    rules.forEach((rule, i) => {
+      checkSpace(7);
+      const isPassed  = rule.status === 'passed';
       const isViolated = rule.status === 'violated';
-      doc.setFont('helvetica', 'bold');
-      if (isPassed) {
-        doc.setTextColor(greenColor[0], greenColor[1], greenColor[2]);
-        doc.text('PASSED', rHeaderX[3] + 1, y + 4);
-      } else if (isViolated) {
-        doc.setTextColor(redColor[0], redColor[1], redColor[2]);
-        doc.text('BREACHED', rHeaderX[3] + 1, y + 4);
-      } else {
-        doc.setTextColor(217, 119, 6);
-        doc.text('IN PROGRESS', rHeaderX[3] + 1, y + 4);
+      const used  = rule.limit > 0 ? Math.round((rule.current / rule.limit) * 100) : 0;
+      const statusColor: [number,number,number] = isPassed ? WIN_COLOR : isViolated ? LOSS_COLOR : [217, 119, 6];
+      const statusText = isPassed ? '✓ PASSED' : isViolated ? '✗ BREACHED' : '⚡ IN PROGRESS';
+
+      // Row with progress bar for used %
+      if (i % 2 === 0) {
+        rgb(doc, theme.cardBg, 'fill');
+        doc.rect(M, y, CW, 6.5, 'F');
       }
 
-      y += 5.5;
+      normal(doc, 6.5);
+      rgb(doc, theme.dark, 'text');
+      doc.text(rule.name, rX[0] + 1.5, y + 4.5);
+      doc.text(`${rule.limit}%`, rX[1] + 1.5, y + 4.5);
+      doc.text(`${rule.current}%`, rX[2] + 1.5, y + 4.5);
+
+      // Mini progress bar
+      const pbW = 22;
+      const pbH = 2.5;
+      const pbY = y + 2.5;
+      rgb(doc, theme.border, 'fill');
+      doc.roundedRect(rX[3] + 1.5, pbY, pbW, pbH, 0.6, 0.6, 'F');
+      const fillPct = Math.min(1, used / 100);
+      rgb(doc, statusColor, 'fill');
+      if (fillPct > 0) doc.roundedRect(rX[3] + 1.5, pbY, pbW * fillPct, pbH, 0.6, 0.6, 'F');
+
+      bold(doc, 6.5);
+      rgb(doc, statusColor, 'text');
+      doc.text(statusText, rX[4] + 1.5, y + 4.5);
+
+      y += 6.5;
     });
 
     y += 8;
   }
 
-  // ==========================================
-  // 7. TRADE EXECUTION JOURNAL
-  // ==========================================
+  // ============================================================
+  // SECTION: TRADE EXECUTION JOURNAL
+  // ============================================================
   if (options.sections.tradeJournal) {
-    checkSpace(35);
+    checkSpace(20);
+    y = sectionTitle(doc, theme, `Full Trade Execution Journal  (${filteredTrades.length} Positions)`, y, PW, M);
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...theme.dark as [number, number, number]);
-    doc.text(`Trade Execution Journal (${filteredTrades.length} Positions)`, margin, y);
-    y += 5;
+    const jHdrs = ['#', 'Date/Time', 'Sym', 'Side', 'Vol', 'Entry', 'Exit', 'Hold', 'Pips', 'P&L', 'Grade', 'Tag'];
+    const jX    = [M, M+12, M+42, M+56, M+69, M+80, M+98, M+116, M+131, M+143, M+158, M+167];
 
-    const jHeaders = ['Ticket', 'Time', 'Type', 'Symbol', 'Vol', 'Open', 'Close', 'Duration', 'Profit', 'Tag'];
-    const jHeaderX = [margin, margin + 18, margin + 46, margin + 58, margin + 74, margin + 87, margin + 104, margin + 122, margin + 142, margin + 160];
-
-    const printJournalHeader = () => {
-      doc.setFillColor(30, 41, 59);
-      doc.rect(margin, y, contentWidth, 6, 'F');
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(255, 255, 255);
-      jHeaders.forEach((h, i) => doc.text(h, jHeaderX[i] + 1, y + 4.2));
-      y += 6;
+    const printJHeader = () => {
+      y = tableHeader(doc, theme, jHdrs, jX, y, CW, M);
     };
 
-    printJournalHeader();
+    printJHeader();
 
-    doc.setFont('helvetica', 'normal');
-    filteredTrades.forEach((trade, index) => {
-      if (y > pageHeight - 16) {
+    filteredTrades.forEach((trade, idx) => {
+      const rowH = (options.includeNotes && trade.notes) ? 11 : 5.5;
+      if (y + rowH > PH - 14) {
         doc.addPage();
-        y = margin;
-        renderRunningHeader();
-        printJournalHeader();
+        y = M;
+        renderPageHeader();
+        printJHeader();
       }
 
-      if (index % 2 === 0) {
-        doc.setFillColor(248, 250, 252);
-        doc.rect(margin, y, contentWidth, 5.5, 'F');
+      if (idx % 2 === 0) {
+        rgb(doc, theme.cardBg, 'fill');
+        doc.rect(M, y, CW, rowH, 'F');
       }
 
-      doc.setFontSize(6.5);
-      doc.setTextColor(51, 65, 85);
-      doc.text(trade.id.slice(-8), jHeaderX[0] + 1, y + 3.8);
-      doc.text(trade.closeTime.slice(5, 16), jHeaderX[1] + 1, y + 3.8);
+      normal(doc, 6);
+      rgb(doc, MUTED, 'text');
+      doc.text(`#${trade.id.slice(-6)}`, jX[0] + 1, y + 3.8);
+      doc.text(trade.closeTime.slice(5, 16), jX[1] + 1, y + 3.8);
 
-      // Type
-      if (trade.type === 'buy') {
-        doc.setTextColor(greenColor[0], greenColor[1], greenColor[2]);
-        doc.text('BUY', jHeaderX[2] + 1, y + 3.8);
+      bold(doc, 6);
+      rgb(doc, theme.dark, 'text');
+      doc.text(trade.symbol, jX[2] + 1, y + 3.8);
+
+      // Side pill
+      const sideColor: [number,number,number] = trade.type === 'buy' ? WIN_COLOR : LOSS_COLOR;
+      pill(doc, trade.type === 'buy' ? '▲ L' : '▼ S', jX[3] + 1, y + 0.8, 10, 4.5, trade.type === 'buy' ? [220, 252, 231] : [254, 226, 226], sideColor, 5.5);
+
+      normal(doc, 6);
+      rgb(doc, theme.dark, 'text');
+      doc.text(trade.volume.toFixed(2), jX[4] + 1, y + 3.8);
+      doc.text(trade.openPrice.toFixed(trade.symbol.includes('JPY') ? 3 : 4), jX[5] + 1, y + 3.8);
+      doc.text(trade.closePrice.toFixed(trade.symbol.includes('JPY') ? 3 : 4), jX[6] + 1, y + 3.8);
+      rgb(doc, MUTED, 'text');
+      doc.text(trade.durationFormatted, jX[7] + 1, y + 3.8);
+
+      // Pips
+      rgb(doc, trade.pips >= 0 ? WIN_COLOR : LOSS_COLOR, 'text');
+      doc.text(`${trade.pips >= 0 ? '+' : ''}${trade.pips}`, jX[8] + 1, y + 3.8);
+
+      // P&L
+      bold(doc, 6.5);
+      rgb(doc, trade.netProfit >= 0 ? WIN_COLOR : LOSS_COLOR, 'text');
+      doc.text(`${trade.netProfit >= 0 ? '+' : ''}$${trade.netProfit.toFixed(2)}`, jX[9] + 1, y + 3.8);
+
+      // Grade
+      if (trade.executionGrade) {
+        const gc: Record<string, [number,number,number]> = { A: WIN_COLOR, B: [59, 130, 246], C: [217, 119, 6], D: [249, 115, 22], F: LOSS_COLOR };
+        bold(doc, 6);
+        rgb(doc, gc[trade.executionGrade] || MUTED, 'text');
+        doc.text(trade.executionGrade, jX[10] + 1, y + 3.8);
       } else {
-        doc.setTextColor(redColor[0], redColor[1], redColor[2]);
-        doc.text('SELL', jHeaderX[2] + 1, y + 3.8);
-      }
-
-      doc.setTextColor(51, 65, 85);
-      doc.text(trade.symbol, jHeaderX[3] + 1, y + 3.8);
-      doc.text(trade.volume.toFixed(2), jHeaderX[4] + 1, y + 3.8);
-      doc.text(trade.openPrice.toFixed(2), jHeaderX[5] + 1, y + 3.8);
-      doc.text(trade.closePrice.toFixed(2), jHeaderX[6] + 1, y + 3.8);
-      doc.text(trade.durationFormatted, jHeaderX[7] + 1, y + 3.8);
-
-      // Profit (Green for profit, Red for loss)
-      if (trade.netProfit > 0) {
-        doc.setTextColor(greenColor[0], greenColor[1], greenColor[2]);
-        doc.text(`+$${trade.netProfit.toFixed(2)}`, jHeaderX[8] + 1, y + 3.8);
-      } else if (trade.netProfit < 0) {
-        doc.setTextColor(redColor[0], redColor[1], redColor[2]);
-        doc.text(`-$${Math.abs(trade.netProfit).toFixed(2)}`, jHeaderX[8] + 1, y + 3.8);
-      } else {
-        doc.setTextColor(100, 116, 139);
-        doc.text('$0.00', jHeaderX[8] + 1, y + 3.8);
+        normal(doc, 6);
+        rgb(doc, MUTED, 'text');
+        doc.text('—', jX[10] + 1, y + 3.8);
       }
 
       // Tag
-      doc.setTextColor(79, 70, 229);
-      doc.text(trade.tags && trade.tags.length > 0 ? trade.tags[0].slice(0, 12) : '-', jHeaderX[9] + 1, y + 3.8);
+      normal(doc, 6);
+      rgb(doc, theme.accent, 'text');
+      doc.text(trade.tags && trade.tags.length > 0 ? trade.tags[0].slice(0, 10) : '—', jX[11] + 1, y + 3.8);
 
       y += 5.5;
 
-      // Print notes if option enabled
+      // Notes row
       if (options.includeNotes && trade.notes) {
-        if (y > pageHeight - 14) {
-          doc.addPage();
-          y = margin;
-          renderRunningHeader();
-          printJournalHeader();
+        if (y + 5 > PH - 14) {
+          doc.addPage(); y = M; renderPageHeader(); printJHeader();
         }
-        doc.setFontSize(5.5);
-        doc.setTextColor(148, 163, 184);
-        doc.text(`Note: ${trade.notes.slice(0, 85)}`, jHeaderX[1] + 1, y + 3);
-        y += 4;
+        normal(doc, 5.5);
+        rgb(doc, MUTED, 'text');
+        const noteLines = doc.splitTextToSize(`↳ ${trade.notes}`, CW - 14);
+        doc.text(noteLines[0] || '', jX[1] + 1, y + 3);
+        y += 5;
       }
     });
   }
 
-  // ==========================================
-  // 8. PAGE FOOTERS ON ALL PAGES
-  // ==========================================
+  // ============================================================
+  // PAGE FOOTERS
+  // ============================================================
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
-    doc.setFontSize(6.5);
-    doc.setTextColor(148, 163, 184);
-    doc.text('100% Client-Side In-Browser Performance Report — Zero Server Data Retention', margin, pageHeight - 7);
-    doc.text(`Page ${i} of ${totalPages} • Powered by TradeScrapbook (tradescrapbook.com)`, pageWidth - margin, pageHeight - 7, { align: 'right' });
+
+    // Bottom accent bar
+    rgb(doc, theme.primary, 'fill');
+    doc.rect(0, PH - 10, PW, 10, 'F');
+
+    normal(doc, 6);
+    rgb(doc, [148, 163, 184], 'text');
+    doc.text('100% Client-Side · No server storage · tradescrapbook.com', M, PH - 4.5);
+    doc.text(`Page ${i} of ${totalPages}  ·  Powered by TradePulse`, PW - M, PH - 4.5, { align: 'right' });
   }
 
-  // Save the PDF
-  const filename = `TradeScrapbook_Statement_${options.maskAccount ? 'Trader' : (accountInfo.account || 'Statement')}_${new Date().toISOString().slice(0, 10)}.pdf`;
-  doc.save(filename);
+  // ── Save ─────────────────────────────────────────────────────────────────
+  const safeAccount = options.maskAccount ? 'Anonymous' : (accountInfo.account || 'Statement').replace(/[^a-zA-Z0-9_-]/g, '');
+  const dateStr     = new Date().toISOString().slice(0, 10);
+  doc.save(`TradePulse_Statement_${safeAccount}_${dateStr}.pdf`);
 }
