@@ -814,69 +814,177 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
-      {/* SEO Keyword Index Bar */}
-      <section className="border-t border-slate-200 bg-slate-100/70 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-4">
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              TradeScrapbook — #1 Free Forex Trading Journal & MT4 MT5 Trading Journal Free
-            </h3>
-            <p className="text-[11px] text-slate-500 mt-1 max-w-2xl mx-auto">
-              The premier free trading journal designed for MetaTrader 4 and MetaTrader 5 traders. Instant statement analytics, daily P&L heatmaps, tilt detection, and 100% private in-browser security.
-            </p>
+      {/* Premium Multi-Column SEO Footer */}
+      <footer className="border-t border-slate-800 bg-slate-900 text-slate-400">
+        {/* Main Content Grid */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+            
+            {/* Brand Column (Spans 2 columns on lg) */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 shadow-md shadow-emerald-500/20">
+                  <TrendingUp className="w-4 h-4 font-bold" />
+                </div>
+                <span className="font-extrabold text-white text-lg tracking-tight whitespace-nowrap">
+                  TradeScrapbook
+                </span>
+                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md">
+                  $0 Free
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+                The premier zero-knowledge free trading journal & free forex trading journal for MetaTrader 4 and MetaTrader 5 traders. Built with instant client-side statement parsing, interactive P&L heatmaps, and AI psychology tilt protection.
+              </p>
+
+              {/* Trust Badges */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 border border-slate-700/80 rounded-lg text-[11px] font-medium text-emerald-400">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>100% In-Browser Private</span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 border border-slate-700/80 rounded-lg text-[11px] font-medium text-slate-300">
+                  <Lock className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Zero Cloud Storage</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Column 1: Core Features */}
+            <div>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+                Journal Features
+              </h4>
+              <ul className="space-y-2.5 text-xs">
+                <li>
+                  <a href="#features" className="hover:text-emerald-400 transition-colors">Daily P&L Calendar</a>
+                </li>
+                <li>
+                  <a href="#features" className="hover:text-emerald-400 transition-colors">MT4 & MT5 Auto-Import</a>
+                </li>
+                <li>
+                  <a href="#features" className="hover:text-emerald-400 transition-colors">AI Tilt & Psychology Coach</a>
+                </li>
+                <li>
+                  <a href="#features" className="hover:text-emerald-400 transition-colors">Prop Firm Drawdown Guard</a>
+                </li>
+                <li>
+                  <a href="#features" className="hover:text-emerald-400 transition-colors">2x Retina Share Cards</a>
+                </li>
+                <li>
+                  <a href="#features" className="hover:text-emerald-400 transition-colors">Institutional PDF Export</a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 2: Dedicated SEO Guides */}
+            <div>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+                Free SEO Guides
+              </h4>
+              <ul className="space-y-2.5 text-xs">
+                <li>
+                  <a href="/free-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Free Trading Journal</a>
+                </li>
+                <li>
+                  <a href="/free-forex-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Free Forex Trading Journal</a>
+                </li>
+                <li>
+                  <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">MT4 MT5 Trading Journal Free</a>
+                </li>
+                <li>
+                  <a href="/prop-firm-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Prop Firm Challenge Tracker</a>
+                </li>
+                <li>
+                  <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-400 transition-colors">Export MT5 Statement Guide</a>
+                </li>
+                <li>
+                  <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-400 transition-colors">Export MT4 Statement Guide</a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Trust, Privacy & Navigation */}
+            <div>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+                Trust & Support
+              </h4>
+              <ul className="space-y-2.5 text-xs">
+                <li>
+                  <button onClick={onOpenPrivacy} className="hover:text-emerald-400 transition-colors text-left cursor-pointer">
+                    Privacy Policy & Guarantee
+                  </button>
+                </li>
+                <li>
+                  <button onClick={onOpenCookieSettings} className="hover:text-emerald-400 transition-colors text-left cursor-pointer">
+                    Cookie Preferences
+                  </button>
+                </li>
+                <li>
+                  <a href="#manifesto" className="hover:text-emerald-400 transition-colors">Why Trade Scrapbook</a>
+                </li>
+                <li>
+                  <a href="#how-it-works" className="hover:text-emerald-400 transition-colors">How Statement Parsing Works</a>
+                </li>
+                <li>
+                  <a href="#faq" className="hover:text-emerald-400 transition-colors">Frequently Asked Questions</a>
+                </li>
+                <li>
+                  <button onClick={onLoadDemo} className="hover:text-emerald-400 transition-colors text-left cursor-pointer text-emerald-400 font-semibold">
+                    Explore Sample Journal →
+                  </button>
+                </li>
+              </ul>
+            </div>
+
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] text-slate-600">
-            <a href="https://tradescrapbook.com/" className="px-2.5 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs font-semibold text-slate-800 transition-colors">TradeScrapbook</a>
-            <a href="https://tradescrapbook.com/" className="px-2.5 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs font-semibold text-slate-800 transition-colors">Trade Scrapbook</a>
-            <a href="/free-trading-journal/" className="px-2.5 py-1 bg-white hover:bg-emerald-50 border border-emerald-300 rounded-lg shadow-2xs font-semibold text-emerald-700 transition-colors">Free Trading Journal</a>
-            <a href="/free-forex-trading-journal/" className="px-2.5 py-1 bg-white hover:bg-emerald-50 border border-emerald-300 rounded-lg shadow-2xs font-semibold text-emerald-700 transition-colors">Free Forex Trading Journal</a>
-            <a href="/mt4-mt5-trading-journal-free/" className="px-2.5 py-1 bg-white hover:bg-indigo-50 border border-indigo-300 rounded-lg shadow-2xs font-semibold text-indigo-700 transition-colors">MT4 MT5 Trading Journal Free</a>
-            <a href="/mt4-mt5-trading-journal-free/" className="px-2.5 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs transition-colors">Free MT5 Trading Journal</a>
-            <a href="/mt4-mt5-trading-journal-free/" className="px-2.5 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs transition-colors">Free MT4 Trading Journal</a>
-            <a href="/prop-firm-trading-journal/" className="px-2.5 py-1 bg-white hover:bg-amber-50 border border-amber-300 rounded-lg shadow-2xs font-semibold text-amber-800 transition-colors">Prop Firm Trading Journal Free</a>
-            <a href="/free-forex-trading-journal/" className="px-2.5 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs transition-colors">MetaTrader Performance Tracker</a>
-            <a href="/free-trading-journal/" className="px-2.5 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-2xs transition-colors">Private In-Browser Trading Journal</a>
+
+          {/* Integrated Keyword Silo Cloud */}
+          <div className="mt-12 pt-8 border-t border-slate-800">
+            <div className="flex items-center justify-between gap-4 mb-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                SEO Keyword Silo & Topic Directory
+              </span>
+              <span className="text-[10px] text-slate-500 font-mono">
+                Canonical: tradescrapbook.com
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 text-[11px]">
+              <a href="https://tradescrapbook.com/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">TradeScrapbook</a>
+              <a href="https://tradescrapbook.com/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">Trade Scrapbook</a>
+              <a href="/free-trading-journal/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">Free Trading Journal</a>
+              <a href="/free-forex-trading-journal/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">Free Forex Trading Journal</a>
+              <a href="/mt4-mt5-trading-journal-free/" className="px-2.5 py-1 bg-indigo-950/40 hover:bg-indigo-950/70 border border-indigo-500/30 rounded-lg font-semibold text-indigo-300 transition-colors">MT4 MT5 Trading Journal Free</a>
+              <a href="/mt4-mt5-trading-journal-free/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">Free MT5 Trading Journal</a>
+              <a href="/mt4-mt5-trading-journal-free/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">Free MT4 Trading Journal</a>
+              <a href="/prop-firm-trading-journal/" className="px-2.5 py-1 bg-amber-950/40 hover:bg-amber-950/70 border border-amber-500/30 rounded-lg font-semibold text-amber-300 transition-colors">Prop Firm Trading Journal Free</a>
+              <a href="/free-forex-trading-journal/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">MetaTrader Performance Tracker</a>
+              <a href="/free-trading-journal/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">Private In-Browser Trading Journal</a>
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-8 px-4 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col gap-5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
-              <span className="font-extrabold text-slate-900">TradeScrapbook (Trade Scrapbook)</span>
+        {/* Bottom Bar Sub-Footer */}
+        <div className="border-t border-slate-800 bg-slate-950/80 py-5 px-4 sm:px-6 lg:px-8 text-xs">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-center sm:text-left">
+              <span>© {new Date().getFullYear()} <strong className="text-slate-300">TradeScrapbook</strong> (Trade Scrapbook).</span>
               <span className="hidden sm:inline">•</span>
-              <span>#1 Free Trading Journal & Free Forex Trading Journal • <a href="https://tradescrapbook.com" className="text-emerald-600 font-semibold hover:underline">tradescrapbook.com</a></span>
+              <span>100% Client-Side Privacy Guaranteed.</span>
+              <span className="hidden sm:inline">•</span>
+              <a href="https://tradescrapbook.com" className="text-emerald-400 hover:underline font-semibold">tradescrapbook.com</a>
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-3 text-[11px]">
-              <button onClick={onOpenPrivacy} className="text-emerald-600 hover:text-emerald-700 transition-colors font-medium cursor-pointer">
-                Privacy Policy & Guarantee
-              </button>
-              <span>•</span>
-              <button onClick={onOpenCookieSettings} className="hover:text-emerald-600 transition-colors font-medium cursor-pointer">
-                Cookie Preferences
-              </button>
-              <span>•</span>
-              <a href="#how-it-works" className="hover:text-slate-800 transition-colors">How It Works</a>
-              <span>•</span>
-              <a href="#manifesto" className="hover:text-slate-800 transition-colors">Why Trade Scrapbook</a>
-              <span>•</span>
-              <a href="#faq" className="hover:text-slate-800 transition-colors">FAQ</a>
-              <span>•</span>
-              <a href="#features" className="hover:text-slate-800 transition-colors">Features</a>
-            </div>
-          </div>
 
-          <div className="border-t border-slate-100 pt-3 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-[11px] text-slate-400">
-            <span className="font-bold text-slate-600">SEO Guides:</span>
-            <a href="/free-trading-journal/" className="hover:text-emerald-600 transition-colors">Free Trading Journal</a>
-            <span>•</span>
-            <a href="/free-forex-trading-journal/" className="hover:text-emerald-600 transition-colors">Free Forex Trading Journal</a>
-            <span>•</span>
-            <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-600 transition-colors">MT4 MT5 Trading Journal Free</a>
-            <span>•</span>
-            <a href="/prop-firm-trading-journal/" className="hover:text-emerald-600 transition-colors">Prop Firm Trading Journal</a>
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[11px] text-slate-400 font-medium">
+                Client-Side Engine Active (100% Private)
+              </span>
+            </div>
           </div>
         </div>
       </footer>
