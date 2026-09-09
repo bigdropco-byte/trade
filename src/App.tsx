@@ -51,32 +51,21 @@ export const App: React.FC = () => {
   });
   const [isCookieModalOpen, setIsCookieModalOpen] = useState<boolean>(false);
 
-  // Stored statement state with deep cache sanitization
+  // Stored statement state
   const [accountInfo, setAccountInfo] = useState<AccountInfo>(() => {
     const saved = localStorage.getItem('tradescrapbook_account') || localStorage.getItem('tradepulse_account');
     if (saved) {
       try { 
-        const parsed = JSON.parse(saved); 
-        // Deep sanitization: if cached data has legacy account or demo data, reset to modern mock demo
-        if (
-          parsed.account?.startsWith(atob('ODAxNw==')) ||
-          parsed.name?.toLowerCase().includes(atob('c2FjaGlu')) ||
-          parsed.name?.toLowerCase().includes(atob('dGFqYW5l')) ||
-          parsed.broker?.toLowerCase().includes('windsor')
-        ) {
-          localStorage.setItem('tradescrapbook_account', JSON.stringify(sampleAccountInfo));
-          return sampleAccountInfo;
-        }
-        return parsed; 
+        return JSON.parse(saved); 
       } catch (e) {}
     }
     return sampleAccountInfo;
   });
 
-  // Global Privacy Masking Mode (Defaults to true for ultra-privacy)
+  // Global Privacy Masking Mode (Defaults to false so real uploaded details show; user can toggle in UI)
   const [isPrivacyMasked, setIsPrivacyMasked] = useState<boolean>(() => {
     const saved = localStorage.getItem('tradescrapbook_privacy_masked') || localStorage.getItem('tradepulse_privacy_masked');
-    return saved !== null ? saved === 'true' : true;
+    return saved !== null ? saved === 'true' : false;
   });
 
   useEffect(() => {
@@ -137,8 +126,12 @@ export const App: React.FC = () => {
   }, [showDashboard, currentTab]);
 
   const handleDataParsed = (result: ParseResult) => {
-    setAccountInfo(result.accountInfo);
+    setAccountInfo({
+      ...result.accountInfo,
+      isDemo: false,
+    });
     setTrades(result.trades);
+    setIsPrivacyMasked(false); // Display real uploaded statement name and details unmasked!
     setShowDashboard(true);
 
     // Track statement import in GA4
@@ -160,7 +153,10 @@ export const App: React.FC = () => {
   };
 
   const handleLoadDemo = () => {
-    setAccountInfo(sampleAccountInfo);
+    setAccountInfo({
+      ...sampleAccountInfo,
+      isDemo: true,
+    });
     setTrades(sampleTrades);
     setShowDashboard(true);
 

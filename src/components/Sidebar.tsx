@@ -154,7 +154,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="p-2.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-900 truncate">
-                {maskTraderName(accountInfo.name || 'Marcus Sterling', isPrivacyMasked)}
+                {maskTraderName(
+                  accountInfo.isDemo ? (accountInfo.name || 'Marcus Sterling') : (accountInfo.name || 'Trader'),
+                  isPrivacyMasked
+                )}
               </span>
               {onTogglePrivacyMask ? (
                 <button
@@ -171,12 +174,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
               ) : (
                 <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                  MT5 Live
+                  {accountInfo.isDemo ? 'Demo' : 'Verified'}
                 </span>
               )}
             </div>
             <div className="text-[11px] text-slate-500 font-mono mt-0.5">
-              #{maskAccountNumber(accountInfo.account || '94827105', isPrivacyMasked)} • {isPrivacyMasked ? 'Regulated' : (accountInfo.broker?.split(' ')[0] || 'Apex')}
+              #{maskAccountNumber(accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'), isPrivacyMasked)} • {isPrivacyMasked ? 'Regulated' : (accountInfo.broker ? accountInfo.broker.split(' ')[0] : (accountInfo.isDemo ? 'Apex' : 'Trading'))}
             </div>
           </div>
         </div>

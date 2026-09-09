@@ -151,6 +151,7 @@ export function parseMatrixData(rows: (string | number | null | undefined)[][]):
     margin: 0,
     marginLevel: 0,
     reportDate: new Date().toISOString().slice(0, 16).replace('T', ' '),
+    isDemo: false,
   };
 
   const trades: Trade[] = [];
@@ -165,25 +166,94 @@ export function parseMatrixData(rows: (string | number | null | undefined)[][]):
     const row = rows[r];
     if (!row || row.length === 0) continue;
 
-    const rowText = row.map(cell => String(cell || '').trim()).join(' ');
+    const rowText = row.map(cell => String(cell || '').trim()).filter(Boolean).join(' ');
     const firstCell = String(row[0] || '').trim();
 
     // 1. Detect Account Header Info
-    // "Name: Trader Name"
+    // Check MT4 statement header format: "Statement: 8017263 - John Doe" or "Statement: 8017263"
+    const statementMatch = rowText.match(/statement\s*:\s*([0-9A-Za-z_-]+)(?:\s*-\s*([^\(\[\r\n\t]+))?/i);
+    if (statementMatch) {
+      if (statementMatch[1] && (accountInfo.account === 'N/A' || !accountInfo.account)) {
+        accountInfo.account = statementMatch[1].trim();
+      }
+      if (statementMatch[2] && (accountInfo.name === 'Trader' || !accountInfo.name)) {
+        accountInfo.name = statementMatch[2].trim();
+      }
+    }
+
+    // First row broker detection (e.g. "Windsor Brokers Ltd" or "IC Markets Global")
+    if (r === 0 && firstCell && !statementMatch) {
+      const lowerFirst = firstCell.toLowerCase();
+      if (
+        !lowerFirst.includes('position') && 
+        !lowerFirst.includes('order') && 
+        !lowerFirst.includes('deal') && 
+        !lowerFirst.includes('ticket') &&
+        !lowerFirst.includes('login') &&
+        !lowerFirst.includes('date') &&
+        accountInfo.broker === 'MetaTrader Account'
+      ) {
+        accountInfo.broker = firstCell;
+      }
+    }
+
+    // Scan cell-by-cell for Account Header Info
     for (let c = 0; c < row.length; c++) {
       const cellVal = String(row[c] || '').trim();
-      if (cellVal.startsWith('Name:')) {
-        accountInfo.name = cellVal.replace('Name:', '').trim() || String(row[c + 1] || '').trim();
-      } else if (cellVal.startsWith('Account:')) {
-        const fullAcc = cellVal.replace('Account:', '').trim() || String(row[c + 1] || '').trim();
-        accountInfo.account = fullAcc.split(' ')[0] || fullAcc;
-        const currencyMatch = fullAcc.match(/\(([^,]+)/);
-        if (currencyMatch) accountInfo.currency = currencyMatch[1].trim();
-        accountInfo.accountType = fullAcc;
-      } else if (cellVal.startsWith('Company:')) {
-        accountInfo.broker = cellVal.replace('Company:', '').trim() || String(row[c + 1] || '').trim();
-      } else if (cellVal.startsWith('Date:')) {
-        accountInfo.reportDate = cellVal.replace('Date:', '').trim() || String(row[c + 1] || '').trim();
+      const nextCell = String(row[c + 1] || '').trim();
+
+      // Name / Trader / Client / Account Holder
+      if (/^(?:name|trader|client|customer|account\s*holder)\s*:?$/i.test(cellVal)) {
+        if (nextCell && !/^(?:account|login|broker|company|date|currency)/i.test(nextCell)) {
+          accountInfo.name = nextCell;
+        }
+      } else if (/^(?:name|trader|client|customer|account\s*holder)\s*:\s*(.+)/i.test(cellVal)) {
+        const m = cellVal.match(/^(?:name|trader|client|customer|account\s*holder)\s*:\s*(.+)/i);
+        if (m && m[1]) accountInfo.name = m[1].trim();
+      }
+
+      // Account # / Login
+      if (/^(?:account|login|account\s*#|a\/c|account\s*no)\s*:?$/i.test(cellVal)) {
+        if (nextCell) {
+          const fullAcc = nextCell;
+          accountInfo.account = fullAcc.split(' ')[0] || fullAcc;
+          const currencyMatch = fullAcc.match(/\(([^,]+)/);
+          if (currencyMatch) accountInfo.currency = currencyMatch[1].trim();
+          accountInfo.accountType = fullAcc;
+        }
+      } else if (/^(?:account|login|account\s*#|a\/c|account\s*no)\s*:\s*(.+)/i.test(cellVal)) {
+        const m = cellVal.match(/^(?:account|login|account\s*#|a\/c|account\s*no)\s*:\s*(.+)/i);
+        if (m && m[1]) {
+          const fullAcc = m[1].trim();
+          accountInfo.account = fullAcc.split(' ')[0] || fullAcc;
+          const currencyMatch = fullAcc.match(/\(([^,]+)/);
+          if (currencyMatch) accountInfo.currency = currencyMatch[1].trim();
+          accountInfo.accountType = fullAcc;
+        }
+      }
+
+      // Company / Broker
+      if (/^(?:company|broker|brokerage|dealer|firm)\s*:?$/i.test(cellVal)) {
+        if (nextCell) accountInfo.broker = nextCell;
+      } else if (/^(?:company|broker|brokerage|dealer|firm)\s*:\s*(.+)/i.test(cellVal)) {
+        const m = cellVal.match(/^(?:company|broker|brokerage|dealer|firm)\s*:\s*(.+)/i);
+        if (m && m[1]) accountInfo.broker = m[1].trim();
+      }
+
+      // Currency
+      if (/^currency\s*:?$/i.test(cellVal)) {
+        if (nextCell) accountInfo.currency = nextCell.replace(/[^A-Z]/gi, '').toUpperCase();
+      } else if (/^currency\s*:\s*(.+)/i.test(cellVal)) {
+        const m = cellVal.match(/^currency\s*:\s*(.+)/i);
+        if (m && m[1]) accountInfo.currency = m[1].replace(/[^A-Z]/gi, '').toUpperCase();
+      }
+
+      // Date
+      if (/^date\s*:?$/i.test(cellVal)) {
+        if (nextCell) accountInfo.reportDate = nextCell;
+      } else if (/^date\s*:\s*(.+)/i.test(cellVal)) {
+        const m = cellVal.match(/^date\s*:\s*(.+)/i);
+        if (m && m[1]) accountInfo.reportDate = m[1].trim();
       }
     }
 
@@ -374,7 +444,11 @@ export function parseMatrixData(rows: (string | number | null | undefined)[][]):
   if (accountInfo.balance === 0 && trades.length > 0) {
     const totalPnl = trades.reduce((acc, t) => acc + t.netProfit, 0);
     accountInfo.balance = parseFloat(((initialBalanceFound || 100) + totalPnl).toFixed(2));
+  }
+  if (accountInfo.equity === 0 && accountInfo.balance !== 0) {
     accountInfo.equity = accountInfo.balance;
+  }
+  if (accountInfo.freeMargin === 0 && accountInfo.balance !== 0) {
     accountInfo.freeMargin = accountInfo.balance;
   }
 
@@ -392,6 +466,26 @@ export function parseHtmlStatement(htmlText: string): ParseResult {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlText, 'text/html');
   const rows: (string | null)[][] = [];
+
+  // Capture document title if it contains statement or account details
+  const titleText = doc.title?.trim() || '';
+  if (titleText) {
+    rows.push([titleText]);
+  }
+
+  // Capture top header tags outside table if any (b, h1, h2, h3, div)
+  const headerNodes = doc.querySelectorAll('b, h1, h2, h3, div');
+  for (let i = 0; i < Math.min(headerNodes.length, 15); i++) {
+    const text = headerNodes[i].textContent?.trim() || '';
+    if (
+      /statement\s*:/i.test(text) ||
+      /name\s*:/i.test(text) ||
+      /company\s*:/i.test(text) ||
+      /broker\s*:/i.test(text)
+    ) {
+      rows.push([text]);
+    }
+  }
 
   const trElements = doc.querySelectorAll('tr');
   trElements.forEach(tr => {

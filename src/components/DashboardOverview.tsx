@@ -194,9 +194,18 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
     setIsEditingAlias(false);
   };
 
-  const displayName = maskTraderName(accountInfo.name || 'Marcus Sterling', isPrivacyMasked);
-  const displayAccount = maskAccountNumber(accountInfo.account || '94827105', isPrivacyMasked);
-  const displayBroker = maskBroker(accountInfo.broker || 'Apex Capital Markets Ltd', isPrivacyMasked);
+  const displayName = maskTraderName(
+    accountInfo.isDemo ? (accountInfo.name || 'Marcus Sterling') : (accountInfo.name || 'Trader'),
+    isPrivacyMasked
+  );
+  const displayAccount = maskAccountNumber(
+    accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'),
+    isPrivacyMasked
+  );
+  const displayBroker = maskBroker(
+    accountInfo.isDemo ? (accountInfo.broker || 'Apex Capital Markets Ltd') : (accountInfo.broker || 'Trading Account'),
+    isPrivacyMasked
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
@@ -209,7 +218,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               {displayName}
             </h1>
             <span className="px-2 py-0.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">
-              Real MT5 Account
+              {accountInfo.isDemo ? 'Sample Demo Account' : 'Verified Statement'}
             </span>
             {accountAlias && !isEditingAlias && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md">

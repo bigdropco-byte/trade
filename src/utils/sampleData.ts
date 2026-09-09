@@ -16,6 +16,7 @@ export const sampleAccountInfo: AccountInfo = {
   marginLevel: 0.00,
   creditFacility: 0.00,
   floatingPL: 0.00,
+  isDemo: true,
 };
 
 function createTrade(

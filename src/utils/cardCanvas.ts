@@ -202,11 +202,15 @@ export function generateCardCanvas(
 
   // 5. Trader and Account Info Row
   const infoY = logoY + 95;
-  const displayName = options.hideName ? 'Verified Trader' : (accountInfo.name || 'Marcus Sterling');
+  const displayName = options.hideName 
+    ? 'Verified Trader' 
+    : (accountInfo.isDemo ? (accountInfo.name || 'Marcus Sterling') : (accountInfo.name || 'Trader'));
   const displayAccount = options.maskAccount 
-    ? `••••${accountInfo.account ? accountInfo.account.slice(-4) : '7105'}` 
-    : (accountInfo.account || '94827105');
-  const displayBroker = options.hideBroker ? 'Regulated Broker' : (accountInfo.broker || 'Apex Capital Markets Ltd');
+    ? `••••${accountInfo.account && accountInfo.account !== 'N/A' ? accountInfo.account.slice(-4) : (accountInfo.isDemo ? '7105' : '••••')}` 
+    : (accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'));
+  const displayBroker = options.hideBroker 
+    ? 'Regulated Broker' 
+    : (accountInfo.isDemo ? (accountInfo.broker || 'Apex Capital Markets Ltd') : (accountInfo.broker || 'Trading Account'));
 
   ctx.font = 'bold 24px "Inter", sans-serif';
   ctx.fillStyle = colors.textPrimary;

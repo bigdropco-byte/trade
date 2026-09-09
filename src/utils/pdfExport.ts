@@ -176,11 +176,15 @@ export function exportStatementPdf(
     doc.setDrawColor(...theme.border as [number, number, number]);
     doc.roundedRect(margin, y, contentWidth, 24, 2, 2, 'FD');
 
-    const displayName = options.maskAccount ? 'Verified Trader' : (accountInfo.name || 'Marcus Sterling');
+    const displayName = options.maskAccount 
+      ? 'Verified Trader' 
+      : (accountInfo.isDemo ? (accountInfo.name || 'Marcus Sterling') : (accountInfo.name || 'Trader'));
     const displayAccount = options.maskAccount 
-      ? `••••${accountInfo.account ? accountInfo.account.slice(-4) : '7105'}` 
-      : (accountInfo.account || '94827105');
-    const displayBroker = options.maskAccount ? 'Regulated Broker' : (accountInfo.broker || 'Apex Capital Markets Ltd');
+      ? `••••${accountInfo.account && accountInfo.account !== 'N/A' ? accountInfo.account.slice(-4) : (accountInfo.isDemo ? '7105' : '••••')}` 
+      : (accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'));
+    const displayBroker = options.maskAccount 
+      ? 'Regulated Broker' 
+      : (accountInfo.isDemo ? (accountInfo.broker || 'Apex Capital Markets Ltd') : (accountInfo.broker || 'Trading Account'));
 
     doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');

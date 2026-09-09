@@ -55,9 +55,18 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'propfirm', label: 'Prop Firm', icon: Award },
   ];
 
-  const displayName = maskTraderName(accountInfo.name || 'Marcus Sterling', isPrivacyMasked);
-  const displayAccount = maskAccountNumber(accountInfo.account || '94827105', isPrivacyMasked);
-  const displayBroker = maskBroker(accountInfo.broker || 'Apex Capital Markets Ltd', isPrivacyMasked);
+  const displayName = maskTraderName(
+    accountInfo.isDemo ? (accountInfo.name || 'Marcus Sterling') : (accountInfo.name || 'Trader'),
+    isPrivacyMasked
+  );
+  const displayAccount = maskAccountNumber(
+    accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'),
+    isPrivacyMasked
+  );
+  const displayBroker = maskBroker(
+    accountInfo.isDemo ? (accountInfo.broker || 'Apex Capital Markets Ltd') : (accountInfo.broker || 'Trading Account'),
+    isPrivacyMasked
+  );
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">

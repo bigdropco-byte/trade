@@ -380,11 +380,15 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setTimeout(() => setCopiedText(false), 2000);
   };
 
-  const displayName = options.hideName ? 'Verified Trader' : (accountInfo.name || 'Marcus Sterling');
+  const displayName = options.hideName 
+    ? 'Verified Trader' 
+    : (accountInfo.isDemo ? (accountInfo.name || 'Marcus Sterling') : (accountInfo.name || 'Trader'));
   const displayAccount = options.maskAccount 
-    ? `••••${accountInfo.account ? accountInfo.account.slice(-4) : '7105'}` 
-    : (accountInfo.account || '94827105');
-  const displayBroker = options.hideBroker ? 'Regulated Broker' : (accountInfo.broker || 'Apex Capital Markets Ltd');
+    ? `••••${accountInfo.account && accountInfo.account !== 'N/A' ? accountInfo.account.slice(-4) : (accountInfo.isDemo ? '7105' : '••••')}` 
+    : (accountInfo.isDemo ? (accountInfo.account || '94827105') : (accountInfo.account || 'Account'));
+  const displayBroker = options.hideBroker 
+    ? 'Regulated Broker' 
+    : (accountInfo.isDemo ? (accountInfo.broker || 'Apex Capital Markets Ltd') : (accountInfo.broker || 'Trading Account'));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150">

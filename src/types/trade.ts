@@ -13,6 +13,7 @@ export interface AccountInfo {
   marginLevel: number;
   creditFacility?: number;
   floatingPL?: number;
+  isDemo?: boolean;
 }
 
 export interface Trade {

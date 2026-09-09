@@ -15,7 +15,7 @@ export function maskAccountNumber(
   account: string | undefined | null,
   isMasked: boolean = true
 ): string {
-  if (!account) return isMasked ? '••••••••' : 'Sample Portfolio';
+  if (!account) return isMasked ? '••••••••' : 'Account';
   if (!isMasked) return String(account);
 
   const clean = String(account).trim();
