@@ -274,27 +274,27 @@ export const App: React.FC = () => {
           <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
             
             {/* Top Header Bar for Main Content */}
-            <header className="h-16 px-4 sm:px-8 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 shadow-2xs">
+            <header className="h-16 px-3 sm:px-8 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 shadow-2xs gap-2">
               {/* Left: Mobile hamburger + Page Title */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 mr-1 sm:mr-2">
                 <button
                   onClick={() => setIsMobileSidebarOpen(true)}
-                  className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden cursor-pointer"
+                  className="p-1.5 sm:p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden cursor-pointer shrink-0"
                 >
                   <Menu className="w-5 h-5" />
                 </button>
-                <div>
-                  <h1 className="text-base sm:text-lg font-bold text-slate-900">
+                <div className="min-w-0">
+                  <h1 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 truncate">
                     {pageHeaders[currentTab]?.title || 'Dashboard'}
                   </h1>
-                  <p className="text-[11px] text-slate-500 hidden sm:block">
+                  <p className="text-[11px] text-slate-500 hidden sm:block truncate">
                     {pageHeaders[currentTab]?.subtitle || 'Institutional performance analytics'}
                   </p>
                 </div>
               </div>
 
               {/* Right: Quick Action Controls */}
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                 <div className="hidden sm:flex items-center gap-3 mr-2 text-xs">
                   <div className="text-right">
                     <div className="text-[10px] text-slate-500 font-medium">Net P&L</div>
@@ -314,7 +314,7 @@ export const App: React.FC = () => {
                 {/* Privacy Mode Quick Toggle */}
                 <button
                   onClick={() => setIsPrivacyMasked(!isPrivacyMasked)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs ${
+                  className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs shrink-0 ${
                     isPrivacyMasked
                       ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
@@ -327,15 +327,15 @@ export const App: React.FC = () => {
 
                 <button
                   onClick={() => setIsUploadOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer shrink-0"
                 >
                   <Upload className="w-3.5 h-3.5" />
-                  <span className="hidden md:inline">Upload</span>
+                  <span className="hidden sm:inline">Upload</span>
                 </button>
 
                 <button
                   onClick={handleExportPdf}
-                  className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer shadow-2xs"
+                  className="p-1.5 sm:p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer shadow-2xs shrink-0"
                   title="Download Statement PDF"
                 >
                   <FileText className="w-4 h-4 text-indigo-600" />
@@ -343,7 +343,7 @@ export const App: React.FC = () => {
 
                 <button
                   onClick={() => setIsShareOpen(true)}
-                  className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer shadow-2xs"
+                  className="p-1.5 sm:p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer shadow-2xs shrink-0"
                   title="Share Screenshot Card"
                 >
                   <Share2 className="w-4 h-4 text-teal-600" />

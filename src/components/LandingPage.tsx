@@ -133,30 +133,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-800">
       
       {/* Top Navbar (Light White Theme) */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs w-full">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
           
           {/* Brand Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-indigo-600 p-0.5 shadow-md shadow-emerald-600/10">
-              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
-                <Activity className="w-5 h-5 text-emerald-600" />
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-indigo-600 p-0.5 shadow-md shadow-emerald-600/10 shrink-0">
+              <div className="w-full h-full bg-white rounded-[9px] sm:rounded-[10px] flex items-center justify-center">
+                <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
               </div>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-extrabold tracking-tight text-slate-900">
-                  Trade<span className="text-emerald-600">Scrapbook</span>
-                </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">
-                  Scrapbook Pro
-                </span>
-              </div>
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+              <span className="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 truncate">
+                Trade<span className="text-emerald-600">Scrapbook</span>
+              </span>
+              <span className="px-1.5 py-0.2 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded shrink-0">
+                PRO
+              </span>
             </div>
           </div>
 
           {/* Nav Links */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-600" aria-label="Main Navigation">
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-600" aria-label="Main Navigation">
             <a href="#manifesto" className="hover:text-emerald-600 transition-colors">Why TradeScrapbook</a>
             <a href="#features" className="hover:text-emerald-600 transition-colors">Features</a>
             <a href="#comparison" className="hover:text-emerald-600 transition-colors">Comparison</a>
@@ -165,25 +163,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </nav>
 
           {/* Action CTAs */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             <button
               onClick={onLoadDemo}
-              className="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-all cursor-pointer shadow-2xs"
+              className="px-2.5 sm:px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-all cursor-pointer shadow-2xs shrink-0"
               title="Explore sample trading journal with preloaded MT5 trades"
             >
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1 sm:gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                <span className="hidden sm:inline">Explore Sample Journal</span>
-                <span className="sm:hidden">Sample Journal</span>
+                <span className="hidden sm:inline">Explore Sample</span>
+                <span className="sm:hidden">Demo</span>
               </span>
             </button>
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-1.5 text-xs font-extrabold text-slate-950 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-2.5 sm:px-4 py-1.5 text-xs font-extrabold text-slate-950 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0"
             >
               <Upload className="w-3.5 h-3.5" />
-              <span>Upload Statement</span>
+              <span className="hidden sm:inline">Upload Statement</span>
+              <span className="sm:hidden">Upload</span>
             </button>
           </div>
 
