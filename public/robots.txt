@@ -3,8 +3,13 @@
 
 User-agent: *
 Allow: /
+Allow: /free-trading-journal/
+Allow: /free-forex-trading-journal/
+Allow: /mt4-mt5-trading-journal-free/
+Allow: /prop-firm-trading-journal/
 Allow: /sample_mt5_statement.xlsx
 Allow: /sample_windsor_mt5_report.xlsx
+Allow: /og-preview.png
 
 # Crawl Delay & Sitemap
 Sitemap: https://tradescrapbook.com/sitemap.xml

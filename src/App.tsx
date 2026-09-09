@@ -96,6 +96,21 @@ export const App: React.FC = () => {
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
 
+  // Listen for query parameters from SEO landing pages (e.g. ?action=demo or ?action=upload)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const action = params.get('action');
+      if (action === 'demo' || params.get('demo') === 'true') {
+        setShowDashboard(true);
+      } else if (action === 'upload') {
+        setIsUploadOpen(true);
+      }
+    } catch (e) {
+      console.error('URL parse error', e);
+    }
+  }, []);
+
   // Sync to localStorage
   useEffect(() => {
     localStorage.setItem('tradescrapbook_account', JSON.stringify(accountInfo));

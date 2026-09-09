@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Trading Journal — #1 Private In-Browser Journal | TradeScrapbook</title>
+  <meta name="title" content="Free Trading Journal — #1 Private In-Browser Journal | TradeScrapbook">
+  <meta name="description" content="Looking for the best free trading journal? TradeScrapbook (Trade Scrapbook) provides 100% private, in-browser trade tracking, automated P&L calendars, win rate analytics, and AI coaching. $0 forever with zero server storage.">
+  <meta name="keywords" content="free trading journal, TradeScrapbook, Trade Scrapbook, best free trading journal, free trading log, trading journal free, free forex trading journal, mt4 mt5 trading journal free, private trading journal, crypto trading journal free">
+  <link rel="canonical" href="https://tradescrapbook.com/free-trading-journal/">
+
+  <!-- OpenGraph / Twitter -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://tradescrapbook.com/free-trading-journal/">
+  <meta property="og:title" content="The #1 Free Trading Journal for Modern Traders — TradeScrapbook">
+  <meta property="og:description" content="Discover TradeScrapbook: The 100% free trading journal with instant statement parsing, daily P&L heatmaps, and zero server storage.">
+  <meta property="og:image" content="https://tradescrapbook.com/og-preview.png">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Free Trading Journal — TradeScrapbook">
+  <meta property="twitter:description" content="Track your trades with the ultimate free trading journal. Instant MT4/MT5 import and complete privacy.">
+  <meta property="twitter:image" content="https://tradescrapbook.com/og-preview.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Structured Data JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://tradescrapbook.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Free Trading Journal",
+            "item": "https://tradescrapbook.com/free-trading-journal/"
+          }
+        ]
+      },
+      {
+        "@type": "WebApplication",
+        "name": "TradeScrapbook Free Trading Journal",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "All modern web browsers",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "The ultimate free trading journal offering automatic statement parsing, interactive P&L calendar, tilt prevention, and client-side privacy."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is TradeScrapbook truly a 100% free trading journal?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. TradeScrapbook is completely free forever. There are no credit cards required, no monthly paywalls, and no hidden subscriptions. All features including P&L calendars, win rate analytics, AI coach insights, and statement exports are $0."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does TradeScrapbook protect my trading data privacy?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "TradeScrapbook operates on a zero-knowledge, client-side architecture. When you import your MetaTrader 4, MetaTrader 5, or Excel statement, the file is parsed directly inside your browser memory. Your trading data is never uploaded or saved to any cloud server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why is TradeScrapbook better than Excel or Google Sheets for journaling?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Spreadsheets require manual data entry for every trade, complex formulas that break easily, and lack automated metrics like Sharpe Ratio, Profit Factor, and tilt detection. TradeScrapbook automatically imports your entire trading history in 1 second, providing instant visual dashboards and heatmaps."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use TradeScrapbook for forex, crypto, and futures?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! TradeScrapbook supports all instruments traded on MetaTrader 4, MetaTrader 5, and standard broker statements, including Forex major/minor pairs, Crypto, Gold, Silver, Oil, Indices (US30, NAS100), and Futures."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --primary: #059669;
+      --primary-hover: #10b981;
+      --accent: #4f46e5;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #ffffff;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    
+    /* Nav */
+    header {
+      border-bottom: 1px solid var(--slate-200);
+      background: rgba(255, 255, 255, 0.95);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 68px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--slate-900);
+      font-weight: 800;
+      font-size: 19px;
+    }
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--slate-700);
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+    .btn-primary:hover { background: #047857; }
+    .btn-outline {
+      background: white;
+      color: var(--slate-800);
+      border: 1px solid var(--slate-200);
+    }
+    .btn-outline:hover { background: var(--slate-100); }
+
+    /* Hero */
+    .hero {
+      padding: 60px 0 50px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      color: var(--slate-900);
+    }
+    h1 span {
+      background: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--slate-700);
+      max-width: 780px;
+      margin: 0 auto 30px;
+    }
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      font-size: 12.5px;
+      color: var(--slate-700);
+      font-weight: 600;
+    }
+
+    /* Content Sections */
+    section { padding: 60px 0; }
+    h2 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      color: var(--slate-900);
+    }
+    h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--slate-900);
+    }
+    p { margin-bottom: 16px; color: var(--slate-700); font-size: 15.5px; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
+    }
+    .card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #ecfdf5;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    /* Comparison Table */
+    .table-container {
+      overflow-x: auto;
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: 16px;
+      margin: 30px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    th, td { padding: 14px 18px; border-bottom: 1px solid var(--slate-200); }
+    th { background: var(--slate-50); font-weight: 700; color: var(--slate-800); }
+    .col-highlight { background: #f0fdf4; font-weight: 700; color: #065f46; }
+
+    /* FAQ */
+    .faq-item {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .faq-q { font-weight: 700; font-size: 16px; margin-bottom: 8px; color: var(--slate-900); }
+    .faq-a { color: var(--slate-700); font-size: 14.5px; margin-bottom: 0; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--slate-200);
+      background: var(--slate-50);
+      padding: 40px 0 30px;
+      font-size: 13px;
+      color: var(--slate-700);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .footer-col h4 {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin-bottom: 12px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: var(--slate-700); text-decoration: none; }
+    .footer-col a:hover { color: var(--primary); }
+    .footer-bottom {
+      border-top: 1px solid var(--slate-200);
+      padding-top: 20px;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="container nav">
+      <a href="https://tradescrapbook.com/" class="brand">
+        <div class="brand-icon">📈</div>
+        <span>TradeScrapbook</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="https://tradescrapbook.com/free-trading-journal/">Free Trading Journal</a></li>
+        <li><a href="https://tradescrapbook.com/free-forex-trading-journal/">Forex Journal</a></li>
+        <li><a href="https://tradescrapbook.com/mt4-mt5-trading-journal-free/">MT4/MT5 Free</a></li>
+        <li><a href="https://tradescrapbook.com/prop-firm-trading-journal/">Prop Firm Tracker</a></li>
+      </ul>
+      <div>
+        <a href="https://tradescrapbook.com/?action=demo" class="btn btn-primary">Launch Free Journal ($0)</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">🛡️ 100% Free Forever • Zero-Knowledge Security</div>
+      <h1>The #1 <span>Free Trading Journal</span> for MT4, MT5 & Forex Traders</h1>
+      <p class="hero-sub">
+        Stop paying $30-$50 monthly fees for locked-down trading journals. <strong>TradeScrapbook (Trade Scrapbook)</strong> delivers automatic statement parsing, interactive P&L calendar heatmaps, AI coach insights, and 100% client-side data privacy. Free forever.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="https://tradescrapbook.com/?action=demo" class="btn btn-primary" style="padding: 14px 26px; font-size: 15px;">
+          🚀 Open Free Journal (Explore Sample)
+        </a>
+        <a href="https://tradescrapbook.com/?action=upload" class="btn btn-outline" style="padding: 14px 24px; font-size: 15px;">
+          📥 Import MT4 / MT5 Statement
+        </a>
+      </div>
+
+      <div class="trust-badges">
+        <span>✓ $0 Subscription Always</span>
+        <span>✓ Zero Cloud Storage</span>
+        <span>✓ 1-Click MetaTrader 4 & 5 Parse</span>
+        <span>✓ Instant P&L Calendar</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deep Content Section -->
+  <section>
+    <div class="container">
+      <h2>Why Every Serious Trader Needs a Free Trading Journal</h2>
+      <p>
+        In professional trading, consistent profitability is rarely about finding a secret indicator; it is about knowing your numbers. Professional hedge funds, proprietary trading firms, and disciplined retail traders track every single trade to identify psychological tilt, measure expectancy, and double down on their highest-probability setups.
+      </p>
+      <p>
+        Until now, traders were forced to choose between cumbersome Excel spreadsheets that break easily or expensive SaaS journals charging upwards of $40 every month. <strong>TradeScrapbook</strong> solves this problem by delivering enterprise-grade performance analytics, interactive equity curves, and AI-driven trade psychology tools—completely free and 100% private.
+      </p>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">📅</div>
+          <h3>Interactive Daily P&L Calendar</h3>
+          <p>
+            Visualize your daily trading results with clean green and red heatmaps. Click any day to inspect winning trades, losing setups, holding durations, and net profit at a glance.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <h3>AI Trading Coach & Tilt Guard</h3>
+          <p>
+            Detect revenge trading, over-leveraging, and weekend gap risks before they blow your account. Get actionable, data-backed recommendations tailored to your trading style.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h3>Zero Server Storage Privacy</h3>
+          <p>
+            Your trading data never touches our servers. TradeScrapbook parses your statements 100% locally in your browser memory, guaranteeing absolute financial confidentiality.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Comparison Table -->
+  <section style="background: var(--slate-50);">
+    <div class="container">
+      <h2 style="text-align: center;">How TradeScrapbook Compares</h2>
+      <p style="text-align: center; max-width: 600px; margin: 0 auto 30px;">
+        See why thousands of traders are switching from paid subscriptions and manual spreadsheets to TradeScrapbook.
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="col-highlight">TradeScrapbook (Free Journal)</th>
+              <th>Paid Trading Journals</th>
+              <th>Excel / Google Sheets</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Monthly Cost</strong></td>
+              <td class="col-highlight"><strong>$0 Free Forever</strong></td>
+              <td>$29 - $49 / month</td>
+              <td>Free (High manual effort)</td>
+            </tr>
+            <tr>
+              <td><strong>Data Privacy</strong></td>
+              <td class="col-highlight"><strong>100% In-Browser Private</strong></td>
+              <td>Saved on third-party cloud</td>
+              <td>Local file</td>
+            </tr>
+            <tr>
+              <td><strong>MT4 / MT5 Auto-Import</strong></td>
+              <td class="col-highlight"><strong>Instant (1 Second Drop)</strong></td>
+              <td>Requires broker login sync</td>
+              <td>Manual copy & paste</td>
+            </tr>
+            <tr>
+              <td><strong>Daily P&L Heatmap</strong></td>
+              <td class="col-highlight"><strong>Included Built-in</strong></td>
+              <td>Included</td>
+              <td>Complex conditional formulas</td>
+            </tr>
+            <tr>
+              <td><strong>AI Tilt & Risk Monitor</strong></td>
+              <td class="col-highlight"><strong>Included Built-in</strong></td>
+              <td>Higher pricing tier only</td>
+              <td>Not available</td>
+            </tr>
+            <tr>
+              <td><strong>Prop Firm Drawdown Limits</strong></td>
+              <td class="col-highlight"><strong>Included (5% / 10% Guard)</strong></td>
+              <td>Optional add-on</td>
+              <td>Manual calculation</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="text-align: center; margin-top: 25px;">
+        <a href="https://tradescrapbook.com/?action=demo" class="btn btn-primary" style="padding: 12px 28px;">
+          Try TradeScrapbook Free Right Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section>
+    <div class="container" style="max-width: 800px;">
+      <h2 style="text-align: center; margin-bottom: 30px;">Frequently Asked Questions About Free Trading Journals</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">Is TradeScrapbook truly a free trading journal?</div>
+        <div class="faq-a">
+          Yes! TradeScrapbook is 100% free with no trial periods, credit card requirements, or feature gating. You get full access to the performance calendar, analytics dashboards, risk calculators, and statement parsing with zero payment.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Do I have to enter my trades manually?</div>
+        <div class="faq-a">
+          No. You can simply export your closed trade history report from MetaTrader 4 or MetaTrader 5 as an Excel (.xlsx) or HTML statement and drop it into TradeScrapbook. It parses your entire account history in under a second.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How does client-side privacy work?</div>
+        <div class="faq-a">
+          Unlike other web journals that store your financial trades on centralized cloud databases, TradeScrapbook executes entirely in your browser using modern WebAssembly and JavaScript. Your trades and account numbers never leave your machine.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What metrics does this free trading journal track?</div>
+        <div class="faq-a">
+          TradeScrapbook tracks your Net Profit & Loss, Win Rate, Profit Factor, Average Win vs Loss, Sharpe Ratio, Expectancy, Maximum Drawdown, Long vs Short ratios, trade durations, and pair-by-pair profitability.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>TradeScrapbook</h4>
+          <p style="font-size: 12px;">The premier free trading journal and free forex trading journal for disciplined traders worldwide.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Dedicated Guides</h4>
+          <ul>
+            <li><a href="https://tradescrapbook.com/free-trading-journal/">Free Trading Journal</a></li>
+            <li><a href="https://tradescrapbook.com/free-forex-trading-journal/">Free Forex Trading Journal</a></li>
+            <li><a href="https://tradescrapbook.com/mt4-mt5-trading-journal-free/">MT4 MT5 Trading Journal Free</a></li>
+            <li><a href="https://tradescrapbook.com/prop-firm-trading-journal/">Prop Firm Trading Journal</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Actions</h4>
+          <ul>
+            <li><a href="https://tradescrapbook.com/?action=demo">Explore Sample Journal</a></li>
+            <li><a href="https://tradescrapbook.com/?action=upload">Upload Statement ($0)</a></li>
+            <li><a href="https://tradescrapbook.com/#faq">FAQ & Support</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 TradeScrapbook (Trade Scrapbook). All rights reserved. 100% Client-Side Privacy Guaranteed.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
