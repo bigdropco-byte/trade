@@ -173,9 +173,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span>{isPrivacyMasked ? 'Masked' : 'Live'}</span>
                 </button>
               ) : (
-                <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                  {accountInfo.isDemo ? 'Demo' : 'Verified'}
-                </span>
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                    {accountInfo.isDemo ? 'Demo' : 'Verified'}
+                  </span>
+                  {accountInfo.platform && (
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                      accountInfo.platform === 'MT5'
+                        ? 'text-blue-700 bg-blue-50 border-blue-200'
+                        : 'text-violet-700 bg-violet-50 border-violet-200'
+                    }`}>
+                      {accountInfo.platform}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
             <div className="text-[11px] text-slate-500 font-mono mt-0.5">

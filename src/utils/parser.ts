@@ -152,6 +152,7 @@ export function parseMatrixData(rows: (string | number | null | undefined)[][]):
     marginLevel: 0,
     reportDate: new Date().toISOString().slice(0, 16).replace('T', ' '),
     isDemo: false,
+    platform: 'MT5',
   };
 
   const trades: Trade[] = [];
@@ -161,6 +162,8 @@ export function parseMatrixData(rows: (string | number | null | undefined)[][]):
   let inOrders = false;
   let inDeals = false;
   let initialBalanceFound = 0;
+  let mt5Confidence = 0;
+  let mt4Confidence = 0;
 
   for (let r = 0; r < rows.length; r++) {
     const row = rows[r];
@@ -169,9 +172,20 @@ export function parseMatrixData(rows: (string | number | null | undefined)[][]):
     const nonEmpties = row.map(cell => String(cell || '').trim()).filter(Boolean);
     const rowText = nonEmpties.join(' ');
     const firstCell = nonEmpties[0] || '';
+    const lowerRow = rowText.toLowerCase();
+
+    // Auto-identify MT4 vs MT5 signals
+    if (lowerRow.includes('metatrader 5') || lowerRow.includes('mt5')) mt5Confidence += 10;
+    if (lowerRow.includes('metatrader 4') || lowerRow.includes('mt4')) mt4Confidence += 10;
+    if (lowerRow.includes('trade history report')) mt5Confidence += 6;
+    if (lowerRow.includes('detailed statement') || lowerRow.includes('closed transactions:')) mt4Confidence += 8;
+    if (lowerRow.includes('open trades:') || lowerRow.includes('working orders:')) mt4Confidence += 6;
+    if (lowerRow === 'positions' || lowerRow.startsWith('positions ')) mt5Confidence += 6;
+    if (lowerRow === 'deals' || lowerRow.startsWith('deals ')) mt5Confidence += 6;
+    if (lowerRow === 'orders' || lowerRow.startsWith('orders ')) mt5Confidence += 3;
+    if (lowerRow.includes(', hedge') || lowerRow.includes(', netting')) mt5Confidence += 5;
 
     // 1. Section Headers
-    const lowerRow = rowText.toLowerCase();
     if (lowerRow === 'positions' || lowerRow.startsWith('positions ')) {
       currentSection = 'positions';
       inPositions = true;
@@ -451,6 +465,9 @@ export function parseMatrixData(rows: (string | number | null | undefined)[][]):
 
   // Sort trades chronologically by close time
   trades.sort((a, b) => a.closeTimestamp - b.closeTimestamp);
+
+  // Auto-identify platform based on accumulated signal confidence
+  accountInfo.platform = mt4Confidence > mt5Confidence ? 'MT4' : 'MT5';
 
   // If balance was not found in footer, calculate from net profits + initial balance
   if (accountInfo.balance === 0 && trades.length > 0) {

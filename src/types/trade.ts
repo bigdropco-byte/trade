@@ -14,6 +14,7 @@ export interface AccountInfo {
   creditFacility?: number;
   floatingPL?: number;
   isDemo?: boolean;
+  platform?: 'MT5' | 'MT4';
 }
 
 export interface Trade {

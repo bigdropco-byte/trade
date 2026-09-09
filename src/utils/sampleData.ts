@@ -17,6 +17,7 @@ export const sampleAccountInfo: AccountInfo = {
   creditFacility: 0.00,
   floatingPL: 0.00,
   isDemo: true,
+  platform: 'MT5',
 };
 
 function createTrade(

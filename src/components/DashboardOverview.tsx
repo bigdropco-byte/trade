@@ -220,6 +220,15 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <span className="px-2 py-0.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">
               {accountInfo.isDemo ? 'Sample Demo Account' : 'Verified Statement'}
             </span>
+            {accountInfo.platform && (
+              <span className={`px-2 py-0.5 text-xs font-bold rounded-md border ${
+                accountInfo.platform === 'MT5'
+                  ? 'bg-blue-50 text-blue-700 border-blue-200'
+                  : 'bg-violet-50 text-violet-700 border-violet-200'
+              }`}>
+                {accountInfo.platform}
+              </span>
+            )}
             {accountAlias && !isEditingAlias && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md">
                 <Tag className="w-3 h-3" />

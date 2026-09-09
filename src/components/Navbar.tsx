@@ -88,6 +88,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="hidden md:inline text-slate-500">
             Account: <span className="text-slate-800 font-mono font-semibold">#{displayAccount}</span> ({displayName})
           </span>
+          {accountInfo.platform && (
+            <span className={`hidden sm:inline-flex text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+              accountInfo.platform === 'MT5'
+                ? 'text-blue-700 bg-blue-50 border-blue-200'
+                : 'text-violet-700 bg-violet-50 border-violet-200'
+            }`}>
+              {accountInfo.platform}
+            </span>
+          )}
           {onTogglePrivacyMask && (
             <button
               onClick={onTogglePrivacyMask}
