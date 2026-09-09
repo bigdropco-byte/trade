@@ -17,6 +17,7 @@ import {
 import { AccountInfo, Trade, TradingMetrics } from '../types/trade';
 import { getEquityCurveData, calculateMetrics } from '../utils/analytics';
 import { generateCardCanvas } from '../utils/cardCanvas';
+import { trackEvent } from '../utils/analyticsTracker';
 
 interface ShareCardModalProps {
   isOpen: boolean;
@@ -167,6 +168,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setIsGenerating(true);
 
     try {
+      trackEvent('download_card_png', { theme: options.theme });
       const canvas = generateCardCanvas(accountInfo, metrics, activeTrades, equityPoints, options);
 
       canvas.toBlob((blob) => {
@@ -218,6 +220,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
           await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
           ]);
+          trackEvent('copy_card_clipboard', { theme: options.theme });
           setCopiedImg(true);
           setTimeout(() => setCopiedImg(false), 2000);
         } catch (clipErr) {
@@ -275,6 +278,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setIsGenerating(true);
     const copied = await copyImageToClipboardQuietly();
     setIsGenerating(false);
+    trackEvent('share_card_twitter', { copied_image: copied });
 
     if (copied) {
       setShareToast('✅ Card image copied to clipboard! Press Ctrl+V (or Cmd+V) to paste into your tweet.');
@@ -292,6 +296,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setIsGenerating(true);
     const copied = await copyImageToClipboardQuietly();
     setIsGenerating(false);
+    trackEvent('share_card_telegram', { copied_image: copied });
 
     if (copied) {
       setShareToast('✅ Card image copied to clipboard! Press Ctrl+V (or Cmd+V) to paste into your Telegram chat.');
@@ -309,6 +314,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setIsGenerating(true);
     const copied = await copyImageToClipboardQuietly();
     setIsGenerating(false);
+    trackEvent('share_card_whatsapp', { copied_image: copied });
 
     if (copied) {
       setShareToast('✅ Card image copied to clipboard! Press Ctrl+V (or Cmd+V) to paste into your WhatsApp chat.');
@@ -324,6 +330,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
 
   const handleNativeShare = async () => {
     setIsGenerating(true);
+    trackEvent('share_card_native');
     try {
       const canvas = generateCardCanvas(accountInfo, metrics, activeTrades, equityPoints, options);
       canvas.toBlob(async (blob) => {

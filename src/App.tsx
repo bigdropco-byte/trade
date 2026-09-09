@@ -33,6 +33,7 @@ import { sampleAccountInfo, sampleTrades } from './utils/sampleData';
 import { calculateMetrics } from './utils/analytics';
 import { exportStatementPdf } from './utils/pdfExport';
 import { ParseResult } from './utils/parser';
+import { trackPageView, trackEvent } from './utils/analyticsTracker';
 
 export const App: React.FC = () => {
   // First show landing page as requested by user
@@ -125,13 +126,30 @@ export const App: React.FC = () => {
     return calculateMetrics(trades, accountInfo.balance || 10000);
   }, [trades, accountInfo.balance]);
 
+  // Track Virtual Page Views in Google Analytics 4 (GA4)
+  useEffect(() => {
+    if (!showDashboard) {
+      trackPageView('TradeScrapbook - Free Trading Journal & Forex Tracker', '/');
+    } else {
+      const tabTitle = currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
+      trackPageView(`TradeScrapbook - ${tabTitle}`, `/#${currentTab}`);
+    }
+  }, [showDashboard, currentTab]);
+
   const handleDataParsed = (result: ParseResult) => {
     setAccountInfo(result.accountInfo);
     setTrades(result.trades);
     setShowDashboard(true);
 
-    // Trigger celebration if profitable
+    // Track statement import in GA4
     const netPnl = result.trades.reduce((acc, t) => acc + t.netProfit, 0);
+    trackEvent('statement_imported', {
+      trade_count: result.trades.length,
+      net_pnl: netPnl,
+      broker: result.accountInfo.broker || 'Unspecified',
+    });
+
+    // Trigger celebration if profitable
     if (netPnl > 0) {
       confetti({
         particleCount: 80,
@@ -145,6 +163,12 @@ export const App: React.FC = () => {
     setAccountInfo(sampleAccountInfo);
     setTrades(sampleTrades);
     setShowDashboard(true);
+
+    // Track sample explore in GA4
+    trackEvent('explore_sample_journal', {
+      category: 'engagement',
+    });
+
     confetti({
       particleCount: 50,
       spread: 60,
