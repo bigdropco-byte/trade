@@ -430,3 +430,31 @@ export const sampleTrades: Trade[] = [
     'Highest conviction trade of the week.'
   )
 ];
+
+// Patch first few sample trades with demo journal enrichment data
+// so the journal panel looks populated for demo users
+const journalPatches: { id: string; rating: number; executionGrade: string; emotion: string }[] = [
+  { id: '51204918', rating: 4, executionGrade: 'B', emotion: 'Confident' },
+  { id: '51256732', rating: 5, executionGrade: 'A', emotion: 'Patient' },
+  { id: '51318850', rating: 2, executionGrade: 'D', emotion: 'FOMO' },
+  { id: '51402001', rating: 3, executionGrade: 'C', emotion: 'Anxious' },
+  { id: '51490234', rating: 5, executionGrade: 'A', emotion: 'Confident' },
+  { id: '72341001', rating: 4, executionGrade: 'B', emotion: 'Patient' },
+  { id: '72350122', rating: 1, executionGrade: 'F', emotion: 'Greedy' },
+  { id: '72398033', rating: 3, executionGrade: 'C', emotion: 'Fearful' },
+  { id: '88100561', rating: 5, executionGrade: 'A', emotion: 'Confident' },
+  { id: '88150003', rating: 2, executionGrade: 'D', emotion: 'Revenge' },
+  { id: '88200188', rating: 4, executionGrade: 'B', emotion: 'Patient' },
+  { id: '88440981', rating: 2, executionGrade: 'C', emotion: 'Anxious' },
+  { id: '88501249', rating: 4, executionGrade: 'A', emotion: 'Confident' },
+  { id: '88514800', rating: 5, executionGrade: 'A', emotion: 'Patient' },
+];
+journalPatches.forEach(patch => {
+  const t = sampleTrades.find(tr => tr.id === patch.id);
+  if (t) {
+    t.rating = patch.rating;
+    t.executionGrade = patch.executionGrade;
+    t.emotion = patch.emotion;
+  }
+});
+

@@ -44,6 +44,11 @@ export interface Trade {
   isBreakeven: boolean;
   isLoss: boolean;
   pnlPercentage?: number;
+  // Journal enrichment fields
+  rating?: number;          // 1–5 star quality rating
+  executionGrade?: string;  // 'A' | 'B' | 'C' | 'D' | 'F'
+  emotion?: string;         // e.g. 'Confident' | 'Anxious' | 'Greedy' ...
+  weekReflection?: string;  // stored on first trade of week, keyed by week ISO string
 }
 
 export interface DailySummary {
