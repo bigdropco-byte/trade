@@ -145,7 +145,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
               <span className="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 truncate">
-                Trade<span className="text-emerald-600">Scrapbook</span>
+                Trade<span className="text-emerald-700">Scrapbook</span>
               </span>
               <span className="px-1.5 py-0.2 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded shrink-0">
                 PRO
@@ -198,6 +198,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         className="hidden"
       />
 
+      {/* Main Page Landmark for Accessibility */}
+      <main id="main-content">
+
       {/* Hero Section */}
       <section className="relative pt-16 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Subtle Background Elements */}
@@ -208,7 +211,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           
           {/* Eyebrow Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold mb-6 shadow-xs">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <ShieldCheck className="w-4 h-4 text-emerald-700" />
             <span>100% Free Forex Trading Journal • MT4 MT5 Trading Journal Free • Zero Server Storage</span>
           </div>
 
@@ -240,15 +243,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   : 'border-slate-300 hover:border-emerald-400 hover:shadow-2xl'
               }`}
             >
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-4 shadow-xs">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 mb-4 shadow-xs">
                 <FileSpreadsheet className="w-8 h-8" />
               </div>
 
               <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                 Drop your MT4 or MT5 Excel Statement Here
               </h2>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm">
-                Supports <strong className="text-slate-700">.xlsx, .xls, .htm, .html, .csv</strong> reports from MetaTrader 5 and MetaTrader 4 — the #1 mt4 mt5 trading journal free forever.
+              <p className="text-xs text-slate-600 mt-1 max-w-sm">
+                Supports <strong className="text-slate-800">.xlsx, .xls, .htm, .html, .csv</strong> reports from MetaTrader 5 and MetaTrader 4 — the #1 mt4 mt5 trading journal free forever.
               </p>
 
               <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
@@ -294,12 +297,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-xs transition-all"
                   title="Download sample MT5 Excel report"
                 >
-                  <Download className="w-3.5 h-3.5 text-emerald-600" />
+                  <Download className="w-3.5 h-3.5 text-emerald-700" />
                   <span>Download Sample .xlsx</span>
                 </a>
                 <button
                   onClick={onLoadDemo}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all cursor-pointer shadow-xs"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all cursor-pointer shadow-xs"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
                   <span>Explore Sample Journal</span>
@@ -313,23 +316,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="mt-14 pt-8 border-t border-slate-200/80 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto text-left">
             <div className="p-4 bg-white border border-slate-200/80 rounded-2xl shadow-2xs">
               <div className="text-2xl font-black text-slate-900 font-mono">$42.8M+</div>
-              <div className="text-xs font-semibold text-slate-500 mt-0.5">Volume Analyzed</div>
-              <p className="text-[10px] text-slate-400 mt-0.5">Forex, Gold, US30, Crypto</p>
+              <div className="text-xs font-semibold text-slate-700 mt-0.5">Volume Analyzed</div>
+              <p className="text-[10px] text-slate-600 mt-0.5">Forex, Gold, US30, Crypto</p>
             </div>
             <div className="p-4 bg-white border border-slate-200/80 rounded-2xl shadow-2xs">
-              <div className="text-2xl font-black text-emerald-600 font-mono">100%</div>
-              <div className="text-xs font-semibold text-slate-500 mt-0.5">In-Browser Private</div>
-              <p className="text-[10px] text-slate-400 mt-0.5">Zero server transmission</p>
+              <div className="text-2xl font-black text-emerald-700 font-mono">100%</div>
+              <div className="text-xs font-semibold text-slate-700 mt-0.5">In-Browser Private</div>
+              <p className="text-[10px] text-slate-600 mt-0.5">Zero server transmission</p>
             </div>
             <div className="p-4 bg-white border border-slate-200/80 rounded-2xl shadow-2xs">
-              <div className="text-2xl font-black text-indigo-600 font-mono">48,200+</div>
-              <div className="text-xs font-semibold text-slate-500 mt-0.5">Statements Parsed</div>
-              <p className="text-[10px] text-slate-400 mt-0.5">MT5, MT4, cTrader, CSV</p>
+              <div className="text-2xl font-black text-indigo-700 font-mono">48,200+</div>
+              <div className="text-xs font-semibold text-slate-700 mt-0.5">Statements Parsed</div>
+              <p className="text-[10px] text-slate-600 mt-0.5">MT5, MT4, cTrader, CSV</p>
             </div>
             <div className="p-4 bg-white border border-slate-200/80 rounded-2xl shadow-2xs">
-              <div className="text-2xl font-black text-teal-600 font-mono">$0.00</div>
-              <div className="text-xs font-semibold text-slate-500 mt-0.5">Free Forever</div>
-              <p className="text-[10px] text-slate-400 mt-0.5">No subscription trap</p>
+              <div className="text-2xl font-black text-teal-700 font-mono">$0.00</div>
+              <div className="text-xs font-semibold text-slate-700 mt-0.5">Free Forever</div>
+              <p className="text-[10px] text-slate-600 mt-0.5">No subscription trap</p>
             </div>
           </div>
 
@@ -339,7 +342,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Supported Brokers & Prop Firms Logo Cloud */}
       <section className="py-8 bg-white border-y border-slate-200 px-4">
         <div className="max-w-7xl mx-auto">
-          <p className="text-center text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-4">
+          <p className="text-center text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-4">
             Flawless Compatibility Across All Major MetaTrader Brokers & Prop Firms
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-bold text-slate-600">
@@ -472,7 +475,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-7xl mx-auto">
           
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
+            <h2 className="text-xs font-bold text-emerald-700 uppercase tracking-widest">
               Everything You Need to Scale
             </h2>
             <p className="text-2xl sm:text-4xl font-black text-slate-900 mt-2">
@@ -574,7 +577,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs">
-            <div className="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">Expectancy ($ / Trade)</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-1">Expectancy ($ / Trade)</div>
             <h3 className="text-base font-bold text-slate-900">Statistical Expectancy</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
               Formula: <em>(Win Rate × Avg Win) - (Loss Rate × Avg Loss)</em>. Positive expectancy guarantees long-term profitability even with a sub-40% win rate when proper risk-reward asymmetry is maintained.
@@ -582,7 +585,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs">
-            <div className="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-1">Sharpe & Sortino</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1">Sharpe & Sortino</div>
             <h3 className="text-base font-bold text-slate-900">Risk-Adjusted Return</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
               Measures how much return your strategy generates per unit of risk. Sortino penalizes only harmful downside volatility, separating clean professional strategies from erratic luck.
@@ -590,7 +593,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs">
-            <div className="text-xs font-bold uppercase tracking-wider text-teal-600 mb-1">Profit Factor</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">Profit Factor</div>
             <h3 className="text-base font-bold text-slate-900">Gross Profit / Gross Loss</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
               A Profit Factor above 1.75 signals an institutional-grade edge. Below 1.0 represents a bleeding account regardless of how high the individual win percentage seems.
@@ -598,7 +601,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs">
-            <div className="text-xs font-bold uppercase tracking-wider text-purple-600 mb-1">Streak Probability</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-purple-700 mb-1">Streak Probability</div>
             <h3 className="text-base font-bold text-slate-900">Consecutive Loss Distribution</h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
               Even with a 60% win rate, a cluster of 5 consecutive losses has an 82% statistical likelihood over 100 trades. Understanding streak probability stops premature account abandonment.
@@ -662,7 +665,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Comparison Section */}
       <section id="comparison" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
+          <h2 className="text-xs font-bold text-emerald-700 uppercase tracking-widest">
             Unmatched Value
           </h2>
           <p className="text-2xl sm:text-4xl font-black text-slate-900 mt-2">
@@ -678,61 +681,61 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <thead>
               <tr className="border-b border-slate-200 bg-slate-100 text-slate-700 text-[11px] uppercase font-semibold">
                 <th className="py-4 pl-6">Feature</th>
-                <th className="py-4 px-4 text-emerald-700 font-bold bg-emerald-50">TradeScrapbook (Free Journal)</th>
+                <th className="py-4 px-4 text-emerald-800 font-bold bg-emerald-50">TradeScrapbook (Free Journal)</th>
                 <th className="py-4 px-4 text-slate-700">Traditional Paid Journals</th>
-                <th className="py-4 pr-6 text-slate-500">Excel / Google Sheets</th>
+                <th className="py-4 pr-6 text-slate-700">Excel / Google Sheets</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">Monthly Subscription</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50">$0 Free Forever</td>
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50">$0 Free Forever</td>
                 <td className="py-3.5 px-4 text-slate-700">$29 - $49 / month</td>
-                <td className="py-3.5 pr-6 text-slate-500">Free / Manual</td>
+                <td className="py-3.5 pr-6 text-slate-700">Free / Manual</td>
               </tr>
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">Zero Server Storage (100% Private)</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50 flex items-center gap-1">
-                  <Check className="w-4 h-4 text-emerald-600" /> 100% In-Browser
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50 flex items-center gap-1">
+                  <Check className="w-4 h-4 text-emerald-700" /> 100% In-Browser
                 </td>
                 <td className="py-3.5 px-4 text-red-600">Stored on cloud servers</td>
-                <td className="py-3.5 pr-6 text-slate-600">Local files</td>
+                <td className="py-3.5 pr-6 text-slate-700">Local files</td>
               </tr>
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">Instant MT5 / MT4 Report Auto-Parse</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50">Instant 1-Click Drop</td>
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50">Instant 1-Click Drop</td>
                 <td className="py-3.5 px-4 text-slate-700">Sync / Broker Login</td>
                 <td className="py-3.5 pr-6 text-red-600">Manual copy-paste</td>
               </tr>
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">Interactive P&L Calendar</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50">Included</td>
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50">Included</td>
                 <td className="py-3.5 px-4 text-slate-700">Included</td>
                 <td className="py-3.5 pr-6 text-red-600">Complex formulas</td>
               </tr>
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">AI Psychology & Revenge Detection</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50">Included</td>
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50">Included</td>
                 <td className="py-3.5 px-4 text-slate-700">Included</td>
                 <td className="py-3.5 pr-6 text-red-600">None</td>
               </tr>
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">Prop Firm Rule Monitor (5% / 10%)</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50">Included</td>
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50">Included</td>
                 <td className="py-3.5 px-4 text-slate-700">Included</td>
                 <td className="py-3.5 pr-6 text-red-600">Manual tracking</td>
               </tr>
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">PDF Report & Screenshot Share Card</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50">1-Click Export</td>
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50">1-Click Export</td>
                 <td className="py-3.5 px-4 text-slate-700">Included</td>
-                <td className="py-3.5 pr-6 text-slate-500">Basic print</td>
+                <td className="py-3.5 pr-6 text-slate-700">Basic print</td>
               </tr>
               <tr>
                 <td className="py-3.5 pl-6 font-semibold text-slate-900">Account Privacy Masking Mode</td>
-                <td className="py-3.5 px-4 font-bold text-emerald-700 bg-emerald-50/50">Built-in 1-Click</td>
+                <td className="py-3.5 px-4 font-bold text-emerald-800 bg-emerald-50/50">Built-in 1-Click</td>
                 <td className="py-3.5 px-4 text-slate-700">Rarely offered</td>
-                <td className="py-3.5 pr-6 text-slate-500">Manual hide cells</td>
+                <td className="py-3.5 pr-6 text-slate-700">Manual hide cells</td>
               </tr>
             </tbody>
           </table>
@@ -813,8 +816,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
+      </main>
+
       {/* Premium Multi-Column SEO Footer */}
-      <footer className="border-t border-slate-800 bg-slate-900 text-slate-400">
+      <footer className="border-t border-slate-800 bg-slate-900 text-slate-300">
         {/* Main Content Grid */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
@@ -833,7 +838,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </span>
               </div>
 
-              <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+              <p className="text-xs text-slate-300 leading-relaxed max-w-sm">
                 The premier zero-knowledge free trading journal & free forex trading journal for MetaTrader 4 and MetaTrader 5 traders. Built with instant client-side statement parsing, interactive P&L heatmaps, and AI psychology tilt protection.
               </p>
 
@@ -852,37 +857,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Column 1: Core Features */}
             <div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
                 Journal Features
-              </h4>
-              <ul className="space-y-2.5 text-xs">
+              </h3>
+              <ul className="space-y-2.5 text-xs text-slate-300">
                 <li>
-                  <a href="#features" className="hover:text-emerald-400 transition-colors">Daily P&L Calendar</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">Daily P&L Calendar</a>
                 </li>
                 <li>
-                  <a href="#features" className="hover:text-emerald-400 transition-colors">MT4 & MT5 Auto-Import</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">MT4 & MT5 Auto-Import</a>
                 </li>
                 <li>
-                  <a href="#features" className="hover:text-emerald-400 transition-colors">AI Tilt & Psychology Coach</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">AI Tilt & Psychology Coach</a>
                 </li>
                 <li>
-                  <a href="#features" className="hover:text-emerald-400 transition-colors">Prop Firm Drawdown Guard</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">Prop Firm Drawdown Guard</a>
                 </li>
                 <li>
-                  <a href="#features" className="hover:text-emerald-400 transition-colors">2x Retina Share Cards</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">2x Retina Share Cards</a>
                 </li>
                 <li>
-                  <a href="#features" className="hover:text-emerald-400 transition-colors">Institutional PDF Export</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">Institutional PDF Export</a>
                 </li>
               </ul>
             </div>
 
             {/* Column 2: Dedicated SEO Guides */}
             <div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
                 Free SEO Guides
-              </h4>
-              <ul className="space-y-2.5 text-xs">
+              </h3>
+              <ul className="space-y-2.5 text-xs text-slate-300">
                 <li>
                   <a href="/free-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Free Trading Journal</a>
                 </li>
@@ -896,38 +901,38 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <a href="/prop-firm-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Prop Firm Challenge Tracker</a>
                 </li>
                 <li>
-                  <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-400 transition-colors">Export MT5 Statement Guide</a>
+                  <a href="/mt4-mt5-trading-journal-free/" className="text-slate-300 hover:text-emerald-400 transition-colors">Export MT5 Statement Guide</a>
                 </li>
                 <li>
-                  <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-400 transition-colors">Export MT4 Statement Guide</a>
+                  <a href="/mt4-mt5-trading-journal-free/" className="text-slate-300 hover:text-emerald-400 transition-colors">Export MT4 Statement Guide</a>
                 </li>
               </ul>
             </div>
 
             {/* Column 3: Trust, Privacy & Navigation */}
             <div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
                 Trust & Support
-              </h4>
-              <ul className="space-y-2.5 text-xs">
+              </h3>
+              <ul className="space-y-2.5 text-xs text-slate-300">
                 <li>
-                  <button onClick={onOpenPrivacy} className="hover:text-emerald-400 transition-colors text-left cursor-pointer">
+                  <button onClick={onOpenPrivacy} className="text-slate-300 hover:text-emerald-400 transition-colors text-left cursor-pointer">
                     Privacy Policy & Guarantee
                   </button>
                 </li>
                 <li>
-                  <button onClick={onOpenCookieSettings} className="hover:text-emerald-400 transition-colors text-left cursor-pointer">
+                  <button onClick={onOpenCookieSettings} className="text-slate-300 hover:text-emerald-400 transition-colors text-left cursor-pointer">
                     Cookie Preferences
                   </button>
                 </li>
                 <li>
-                  <a href="#manifesto" className="hover:text-emerald-400 transition-colors">Why Trade Scrapbook</a>
+                  <a href="#manifesto" className="text-slate-300 hover:text-emerald-400 transition-colors">Why Trade Scrapbook</a>
                 </li>
                 <li>
-                  <a href="#how-it-works" className="hover:text-emerald-400 transition-colors">How Statement Parsing Works</a>
+                  <a href="#how-it-works" className="text-slate-300 hover:text-emerald-400 transition-colors">How Statement Parsing Works</a>
                 </li>
                 <li>
-                  <a href="#faq" className="hover:text-emerald-400 transition-colors">Frequently Asked Questions</a>
+                  <a href="#faq" className="text-slate-300 hover:text-emerald-400 transition-colors">Frequently Asked Questions</a>
                 </li>
                 <li>
                   <button onClick={onLoadDemo} className="hover:text-emerald-400 transition-colors text-left cursor-pointer text-emerald-400 font-semibold">
@@ -942,10 +947,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {/* Integrated Keyword Silo Cloud */}
           <div className="mt-12 pt-8 border-t border-slate-800">
             <div className="flex items-center justify-between gap-4 mb-3">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300">
                 SEO Keyword Silo & Topic Directory
               </span>
-              <span className="text-[10px] text-slate-500 font-mono">
+              <span className="text-[10px] text-slate-400 font-mono">
                 Canonical: tradescrapbook.com
               </span>
             </div>
@@ -966,9 +971,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* Bottom Bar Sub-Footer */}
         <div className="border-t border-slate-800 bg-slate-950/80 py-5 px-4 sm:px-6 lg:px-8 text-xs">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-300">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-center sm:text-left">
-              <span>© {new Date().getFullYear()} <strong className="text-slate-300">TradeScrapbook</strong> (Trade Scrapbook).</span>
+              <span>© {new Date().getFullYear()} <strong className="text-white">TradeScrapbook</strong> (Trade Scrapbook).</span>
               <span className="hidden sm:inline">•</span>
               <span>100% Client-Side Privacy Guaranteed.</span>
               <span className="hidden sm:inline">•</span>
@@ -980,7 +985,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span className="text-[11px] text-slate-400 font-medium">
+              <span className="text-[11px] text-slate-300 font-medium">
                 Client-Side Engine Active (100% Private)
               </span>
             </div>

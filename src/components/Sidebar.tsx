@@ -130,8 +130,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-lg font-black tracking-tight text-slate-900 group-hover:text-emerald-600 transition-colors">
-                  Trade<span className="text-emerald-600">Scrapbook</span>
+                <span className="text-lg font-black tracking-tight text-slate-900 group-hover:text-emerald-700 transition-colors">
+                  Trade<span className="text-emerald-700">Scrapbook</span>
                 </span>
                 <span className="px-1.5 py-0.2 text-[9px] font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">
                   PRO

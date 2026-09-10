@@ -1,4 +1,3 @@
-import * as XLSX from 'xlsx';
 import { AccountInfo, Trade } from '../types/trade';
 
 export interface ParseResult {
@@ -118,7 +117,8 @@ export async function parseStatementFile(file: File): Promise<ParseResult> {
     return parseHtmlStatement(text);
   }
 
-  // Read array buffer with SheetJS
+  // Read array buffer with SheetJS (dynamically imported to optimize initial page load)
+  const XLSX = await import('xlsx');
   const arrayBuffer = await file.arrayBuffer();
   const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
   

@@ -6,6 +6,21 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss()],
+  build: {
+    sourcemap: true,
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-chart': ['chart.js', 'react-chartjs-2'],
+          'vendor-icons': ['lucide-react'],
+          'vendor-xlsx': ['xlsx'],
+          'vendor-pdf': ['jspdf']
+        }
+      }
+    }
+  },
   server: {
     port: 5173,
     host: true

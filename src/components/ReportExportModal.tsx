@@ -82,9 +82,9 @@ export const ReportExportModal: React.FC<ReportExportModalProps> = ({
 
   const handleGenerate = () => {
     setIsGenerating(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
-        exportStatementPdf(accountInfo, metrics, trades, options);
+        await exportStatementPdf(accountInfo, metrics, trades, options);
         onClose();
       } catch (err) {
         console.error('PDF export failed', err);

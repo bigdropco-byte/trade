@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+import type jsPDF from 'jspdf';
 import { AccountInfo, Trade, TradingMetrics } from '../types/trade';
 import {
   calculateMetrics,
@@ -335,7 +335,7 @@ function equityCurve(
 
 // ─── Main Export Function ─────────────────────────────────────────────────────
 
-export function exportStatementPdf(
+export async function exportStatementPdf(
   accountInfo: AccountInfo,
   rawMetrics: TradingMetrics,
   allTrades: Trade[],
@@ -366,7 +366,8 @@ export function exportStatementPdf(
   const metrics = calculateMetrics(filteredTrades, accountInfo.balance || 10000);
   const theme = THEMES[options.colorTheme || 'emerald'];
 
-  // ── jsPDF init ────────────────────────────────────────────────────────────
+  // ── jsPDF dynamic import & init ──────────────────────────────────────────
+  const { default: jsPDF } = await import('jspdf');
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const PW  = doc.internal.pageSize.getWidth();   // 210
   const PH  = doc.internal.pageSize.getHeight();  // 297

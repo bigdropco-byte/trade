@@ -31,7 +31,6 @@ import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { AccountInfo, Trade } from './types/trade';
 import { sampleAccountInfo, sampleTrades } from './utils/sampleData';
 import { calculateMetrics } from './utils/analytics';
-import { exportStatementPdf } from './utils/pdfExport';
 import { ParseResult } from './utils/parser';
 import { trackPageView, trackEvent } from './utils/analyticsTracker';
 
