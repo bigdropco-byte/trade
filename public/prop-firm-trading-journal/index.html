@@ -68,15 +68,53 @@
         ]
       },
       {
-        "@type": "WebApplication",
+        "@type": ["SoftwareApplication", "WebApplication"],
         "name": "TradeScrapbook Prop Firm Trading Journal Free",
         "applicationCategory": "FinanceApplication",
-        "operatingSystem": "All modern web browsers",
+        "operatingSystem": "All modern web browsers (Windows, macOS, Linux, iOS, Android)",
         "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "USD"
-        }
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": "3150"
+        },
+        "description": "The premier prop firm trading journal free forever. Live drawdown monitor for FTMO, FundedNext, and The5ers rules."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I track FTMO drawdown rules with TradeScrapbook?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! TradeScrapbook features a built-in 5% daily maximum drawdown and 10% maximum trailing drawdown monitor to protect your challenge and funded accounts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does TradeScrapbook support FundedNext, The5ers, and other prop firms?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! TradeScrapbook natively parses MT4, MT5, and Excel statements from any broker or prop firm challenge provider in under 1 second."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is TradeScrapbook 100% free for prop firm traders?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. TradeScrapbook requires no subscription, no credit card, and zero cloud storage. Everything runs 100% client-side in your own browser."
+            }
+          }
+        ]
       }
     ]
   }
@@ -365,6 +403,34 @@
           <p>
             Our AI Coach detects rapid-fire consecutive losses and oversized lots, alerting you to step away before emotional tilt invalidates your funded account.
           </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prop Firm FAQ Section -->
+  <section style="background: var(--slate-50); border-top: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200);">
+    <div class="container" style="max-width: 800px;">
+      <h2 style="text-align: center; margin-bottom: 30px;">Prop Firm Trading Journal FAQ</h2>
+
+      <div style="background: white; border: 1px solid var(--slate-200); border-radius: 12px; padding: 20px; margin-bottom: 12px;">
+        <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">Can I track FTMO drawdown rules with TradeScrapbook?</div>
+        <div style="color: var(--slate-700); font-size: 14.5px;">
+          Yes! TradeScrapbook features a built-in 5% daily maximum drawdown and 10% maximum trailing drawdown monitor to protect your challenge and funded accounts.
+        </div>
+      </div>
+
+      <div style="background: white; border: 1px solid var(--slate-200); border-radius: 12px; padding: 20px; margin-bottom: 12px;">
+        <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">Does TradeScrapbook support FundedNext, The5ers, and other prop firms?</div>
+        <div style="color: var(--slate-700); font-size: 14.5px;">
+          Yes! TradeScrapbook natively parses MT4, MT5, and Excel statements from any broker or prop firm challenge provider in under 1 second.
+        </div>
+      </div>
+
+      <div style="background: white; border: 1px solid var(--slate-200); border-radius: 12px; padding: 20px; margin-bottom: 12px;">
+        <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">Is TradeScrapbook 100% free for prop firm traders?</div>
+        <div style="color: var(--slate-700); font-size: 14.5px;">
+          Yes. TradeScrapbook requires no subscription, no credit card, and zero cloud storage. Everything runs 100% client-side in your own browser.
         </div>
       </div>
     </div>

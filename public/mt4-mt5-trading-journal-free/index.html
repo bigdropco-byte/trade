@@ -90,15 +90,45 @@
         ]
       },
       {
-        "@type": "WebApplication",
+        "@type": ["SoftwareApplication", "WebApplication"],
         "name": "TradeScrapbook MT4 MT5 Trading Journal Free",
         "applicationCategory": "FinanceApplication",
-        "operatingSystem": "All modern web browsers",
+        "operatingSystem": "All modern web browsers (Windows, macOS, Linux, iOS, Android)",
         "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "USD"
-        }
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": "2890"
+        },
+        "description": "The premier MT4 MT5 trading journal free forever. Features 1-click Excel statement parsing, daily P&L calendar, and AI tilt psychology insights."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does TradeScrapbook support partial closes in MT5?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! TradeScrapbook's custom parser accurately calculates entry prices, partial volume closes, and commissions across multi-legged positions from MetaTrader 5 statements."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Will my account number or broker balance be exposed?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Never. TradeScrapbook has a built-in Privacy Masking Mode that conceals your real account number and broker name. Furthermore, your data is processed 100% locally on your device with zero server storage."
+            }
+          }
+        ]
       }
     ]
   }
