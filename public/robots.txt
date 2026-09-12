@@ -3,6 +3,10 @@
 
 User-agent: *
 Allow: /
+Allow: /tradezella-alternative/
+Allow: /tradezella-alternative-review/
+Allow: /tradezella-alternative-for-beginners/
+Allow: /tradezella-free-alternative-reddit/
 Allow: /free-trading-journal/
 Allow: /free-forex-trading-journal/
 Allow: /mt4-mt5-trading-journal-free/

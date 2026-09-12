@@ -822,7 +822,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <footer className="border-t border-slate-800 bg-slate-900 text-slate-300">
         {/* Main Content Grid */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
             
             {/* Brand Column (Spans 2 columns on lg) */}
             <div className="lg:col-span-2 space-y-4">
@@ -855,7 +855,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             </div>
 
-            {/* Column 1: Core Features */}
+            {/* Column 1: TradeZella Alternatives (Target Silo) */}
+            <div>
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+                TradeZella Alternatives
+              </h3>
+              <ul className="space-y-2.5 text-xs text-slate-300">
+                <li>
+                  <a href="/tradezella-alternative/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Best Alternative</a>
+                </li>
+                <li>
+                  <a href="/tradezella-alternative-review/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Hands-on Review</a>
+                </li>
+                <li>
+                  <a href="/tradezella-alternative-for-beginners/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">For Beginners ($0)</a>
+                </li>
+                <li>
+                  <a href="/tradezella-free-alternative-reddit/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Reddit Community Choice</a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 2: Dedicated Free SEO Guides */}
+            <div>
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
+                Free SEO Guides
+              </h3>
+              <ul className="space-y-2.5 text-xs text-slate-300">
+                <li>
+                  <a href="/free-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Free Trading Journal</a>
+                </li>
+                <li>
+                  <a href="/free-forex-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Free Forex Journal</a>
+                </li>
+                <li>
+                  <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">MT4 MT5 Journal Free</a>
+                </li>
+                <li>
+                  <a href="/prop-firm-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Prop Firm Challenge Tracker</a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Journal Features */}
             <div>
               <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
                 Journal Features
@@ -868,48 +910,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">MT4 & MT5 Auto-Import</a>
                 </li>
                 <li>
-                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">AI Tilt & Psychology Coach</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">AI Tilt & Psychology</a>
                 </li>
                 <li>
                   <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">Prop Firm Drawdown Guard</a>
                 </li>
                 <li>
-                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">2x Retina Share Cards</a>
-                </li>
-                <li>
-                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">Institutional PDF Export</a>
+                  <a href="#features" className="text-slate-300 hover:text-emerald-400 transition-colors">Retina Share Cards</a>
                 </li>
               </ul>
             </div>
 
-            {/* Column 2: Dedicated SEO Guides */}
-            <div>
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
-                Free SEO Guides
-              </h3>
-              <ul className="space-y-2.5 text-xs text-slate-300">
-                <li>
-                  <a href="/free-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Free Trading Journal</a>
-                </li>
-                <li>
-                  <a href="/free-forex-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Free Forex Trading Journal</a>
-                </li>
-                <li>
-                  <a href="/mt4-mt5-trading-journal-free/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">MT4 MT5 Trading Journal Free</a>
-                </li>
-                <li>
-                  <a href="/prop-firm-trading-journal/" className="hover:text-emerald-400 transition-colors font-medium text-slate-300">Prop Firm Challenge Tracker</a>
-                </li>
-                <li>
-                  <a href="/mt4-mt5-trading-journal-free/" className="text-slate-300 hover:text-emerald-400 transition-colors">Export MT5 Statement Guide</a>
-                </li>
-                <li>
-                  <a href="/mt4-mt5-trading-journal-free/" className="text-slate-300 hover:text-emerald-400 transition-colors">Export MT4 Statement Guide</a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3: Trust, Privacy & Navigation */}
+            {/* Column 4: Trust, Privacy & Navigation */}
             <div>
               <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
                 Trust & Support
@@ -917,19 +929,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <ul className="space-y-2.5 text-xs text-slate-300">
                 <li>
                   <button onClick={onOpenPrivacy} className="text-slate-300 hover:text-emerald-400 transition-colors text-left cursor-pointer">
-                    Privacy Policy & Guarantee
+                    Privacy Guarantee
                   </button>
                 </li>
                 <li>
                   <button onClick={onOpenCookieSettings} className="text-slate-300 hover:text-emerald-400 transition-colors text-left cursor-pointer">
-                    Cookie Preferences
+                    Cookie Settings
                   </button>
                 </li>
                 <li>
                   <a href="#manifesto" className="text-slate-300 hover:text-emerald-400 transition-colors">Why Trade Scrapbook</a>
-                </li>
-                <li>
-                  <a href="#how-it-works" className="text-slate-300 hover:text-emerald-400 transition-colors">How Statement Parsing Works</a>
                 </li>
                 <li>
                   <a href="#faq" className="text-slate-300 hover:text-emerald-400 transition-colors">Frequently Asked Questions</a>
@@ -957,6 +966,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="flex flex-wrap gap-2 text-[11px]">
               <a href="https://tradescrapbook.com/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">TradeScrapbook</a>
               <a href="https://tradescrapbook.com/" className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300 transition-colors">Trade Scrapbook</a>
+              <a href="/tradezella-alternative/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">TradeZella Alternative</a>
+              <a href="/tradezella-alternative-review/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">TradeZella Alternative Review</a>
+              <a href="/tradezella-alternative-for-beginners/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">TradeZella Alternative for Beginners</a>
+              <a href="/tradezella-free-alternative-reddit/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">TradeZella Free Alternative Reddit</a>
               <a href="/free-trading-journal/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">Free Trading Journal</a>
               <a href="/free-forex-trading-journal/" className="px-2.5 py-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 rounded-lg font-semibold text-emerald-400 transition-colors">Free Forex Trading Journal</a>
               <a href="/mt4-mt5-trading-journal-free/" className="px-2.5 py-1 bg-indigo-950/40 hover:bg-indigo-950/70 border border-indigo-500/30 rounded-lg font-semibold text-indigo-300 transition-colors">MT4 MT5 Trading Journal Free</a>
