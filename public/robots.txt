@@ -15,6 +15,5 @@ Allow: /sample_mt5_statement.xlsx
 Allow: /sample_windsor_mt5_report.xlsx
 Allow: /og-preview.png
 
-# Crawl Delay & Sitemap
+# XML Sitemap
 Sitemap: https://tradescrapbook.com/sitemap.xml
-Host: https://tradescrapbook.com
