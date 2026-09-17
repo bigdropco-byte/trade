@@ -15,6 +15,7 @@ Allow: /sample_mt5_statement.xlsx
 Allow: /sample_windsor_mt5_report.xlsx
 Allow: /og-preview.png
 Allow: /56c9a61a6b77a0dc7c0c946c6923c81b.txt
+Allow: /be1496c0612cf9dd9dc81d86fca76558.txt
 
 # XML Sitemap
 Sitemap: https://tradescrapbook.com/sitemap.xml
