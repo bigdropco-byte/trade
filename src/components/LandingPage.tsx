@@ -626,6 +626,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </p>
           </div>
 
+          {/* SEO Optimized Responsive Infographic */}
+          <figure className="mb-14 max-w-5xl mx-auto rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/90 shadow-xl shadow-slate-900/5 bg-slate-950 group">
+            <div className="relative overflow-hidden aspect-[16/9] w-full bg-slate-900">
+              <img
+                src="/how-it-works-free-trading-journal-infographic.jpg"
+                alt="How TradeScrapbook Works — 3-Step Free Trading Journal & MT4 MT5 Statement Importer Infographic"
+                title="How TradeScrapbook Works: Free Forex & MT4 MT5 Trading Journal Workflow"
+                width={1376}
+                height={768}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover rounded-t-2xl sm:rounded-t-3xl transition-transform duration-500 group-hover:scale-[1.01]"
+              />
+            </div>
+            <figcaption className="p-4 sm:p-5 bg-white border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+              <div className="flex items-center gap-2 font-medium">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">✓</span>
+                <span>Visual Workflow: <strong>Export MetaTrader Statement</strong> → <strong>100% In-Browser Drop</strong> → <strong>Instant P&L & AI Analysis</strong></span>
+              </div>
+              <span className="text-[11px] text-slate-400 font-mono tracking-tight">Zero Server Upload • 100% Free Forever</span>
+            </figcaption>
+          </figure>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
             <div className="bg-white border border-slate-200 p-6 rounded-2xl text-center relative shadow-xs">
