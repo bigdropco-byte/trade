@@ -29,7 +29,8 @@ import {
   Scale,
   Target,
   ShieldAlert,
-  BookOpen
+  BookOpen,
+  Play
 } from 'lucide-react';
 import { parseStatementFile, ParseResult } from '../utils/parser';
 
@@ -47,10 +48,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenCookieSettings,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  const handleSeekVideo = (seconds: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = seconds;
+      videoRef.current.play().catch(() => {});
+    }
+  };
 
   const handleFile = async (file: File) => {
     setError(null);
@@ -624,6 +633,107 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <p className="text-xs sm:text-sm text-slate-500 mt-2">
               No registration, no software installation, and no broker API keys required.
             </p>
+          </div>
+
+          {/* SEO Optimized Responsive Video Walkthrough */}
+          <div className="mb-12 max-w-5xl mx-auto">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl shadow-slate-950/20">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-2 pb-3 mb-3 border-b border-slate-800 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2.5 w-2.5 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                  </span>
+                  <span className="font-bold text-white uppercase tracking-wider text-[11px]">Video Walkthrough (27s)</span>
+                  <span className="text-slate-500 hidden sm:inline">•</span>
+                  <span className="text-slate-300 hidden sm:inline">How TradeScrapbook Works</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-400 font-mono text-[11px]">
+                  <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>100% Client-Side In-Browser Privacy</span>
+                </div>
+              </div>
+
+              {/* Video Element with WebM + MP4 Fallbacks and Poster for zero CLS */}
+              <div className="relative aspect-video w-full rounded-xl sm:rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
+                <video
+                  ref={videoRef}
+                  id="how-it-works-video"
+                  controls
+                  preload="metadata"
+                  playsInline
+                  poster="/how-it-works-video-poster.jpg"
+                  width={1280}
+                  height={720}
+                  className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
+                  title="How TradeScrapbook Works — 3-Step Free Trading Journal & MT4 MT5 Statement Importer Video Tutorial"
+                >
+                  <source src="/how-it-works-trading-journal.webm" type="video/webm" />
+                  <source src="/how-it-works-trading-journal.mp4" type="video/mp4" />
+                  <p className="p-6 text-center text-slate-400 text-sm">
+                    Your browser does not support HTML5 video. You can{' '}
+                    <a href="/how-it-works-trading-journal.mp4" className="text-emerald-400 underline font-medium">
+                      download the video walkthrough here
+                    </a>.
+                  </p>
+                </video>
+              </div>
+
+              {/* Interactive Video Chapter Navigation */}
+              <div className="mt-3.5 pt-3.5 border-t border-slate-800/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-2.5 text-xs">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Interactive Chapters:</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSeekVideo(0)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors text-[11px] font-medium"
+                    title="Jump to Overview (0:00)"
+                  >
+                    <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                    <span>0:00 Intro</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSeekVideo(4.5)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors text-[11px] font-medium"
+                    title="Jump to Step 1: Export MT4/MT5 (0:04)"
+                  >
+                    <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                    <span>0:04 Step 1: Export MT4/5</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSeekVideo(10.5)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors text-[11px] font-medium"
+                    title="Jump to Step 2: Drop & Parse (0:10)"
+                  >
+                    <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                    <span>0:10 Step 2: Drop & Parse</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSeekVideo(16.5)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors text-[11px] font-medium"
+                    title="Jump to Step 3: Instant Analytics (0:16)"
+                  >
+                    <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                    <span>0:16 Step 3: Analytics</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSeekVideo(23.5)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 hover:text-white transition-colors text-[11px] font-semibold"
+                    title="Jump to Free Access (0:23)"
+                  >
+                    <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                    <span>0:23 Start Free</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* SEO Optimized Responsive Infographic */}
